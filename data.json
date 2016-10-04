@@ -1,18 +1,35 @@
 {
-    "v_label": ["Assignment 1", "Assignment 2", "Midterm 1", "Assignment 3", "Midterm 2", "Assignment 4", "Final"],
-    "h_label": ["Fall 2013", "Spring 2014", "Fall 2014", "Spring 2015", "Fall 2015", "Spring 2016", "Fall 2016"],
+    "v_labels": ["Reviewer 1", "Reviewer 2", "Reviewer 3", "Reviewer 4", "Reviewer 5", "Reviewer 6", "Reviewer 7"],
+    "h_labels": ["Submission 1", "Submission 2", "Submission 3", "Submission 4", "Submission 5", "Submission 6", "Submission 7"],
     "font-size": 12,
     "font-face": "Arial",
-    "color_scheme": [{
-        "default": "#456AED"
-    }, {
-        "-1 - -.5": "#AAABBB"
-    }, {
-        "-.5 - 0": "#AAABBB"
-    }, {
-        "0 - 0.5": "#AAABBB"
-    }, {
-        "0.5 - 1": "#AAABBB"
-    }],
+    "color_scheme": {
+        "default": "#456AED",
+        "ranges": [{
+            "minimum": -1,
+            "maximum": -0.5,
+            "exclusiveMaximum": true,
+            "exclusiveMinimum": false,
+            "color": "#AAABBB"
+        }, {
+            "minimum": -0.5,
+            "maximum": 0,
+            "exclusiveMaximum": true,
+            "exclusiveMinimum": true,
+            "color": "#AAABBB"
+        }, {
+            "minimum": 0,
+            "maximum": 0.5,
+            "exclusiveMaximum": true,
+            "exclusiveMinimum": true,
+            "color": "#AAABBB"
+        }, {
+            "minimum": 0.5,
+            "maximum": 1,
+            "exclusiveMaximum": false,
+            "exclusiveMinimum": false,
+            "color": "#AAABBB"
+        }]
+    },
     "content": []
 }

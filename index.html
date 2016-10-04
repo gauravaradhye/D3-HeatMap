@@ -73,7 +73,7 @@
     </div>
     <script type="text/javascript">
         var margin = {
-                top: 100,
+                top: 110,
                 right: 0,
                 bottom: 100,
                 left: 140
@@ -82,17 +82,14 @@
             height = $("#chart").parent().height() - margin.top - margin.bottom,
             gridSize = Math.floor(width / 12),
             legendElementWidth = gridSize * 1.25,
-            buckets = 8,
-            colors = ["#C0392B", "#E74C3C", "#F39C12", "#F4D03F", "#ABEBC6", "#58D68D", "#239B56", "#0E6655", "#154360"], // alternatively colorbrewer.YlGnBu[9]
-            assignments = [],
-            courses = [];
+            colors = ["#C0392B", "#E74C3C", "#F39C12", "#F4D03F", "#ABEBC6", "#58D68D", "#239B56", "#0E6655", "#154360"],
+            h_labels = [],
+            v_labels = [];
 
-        console.log("Data loading started");
         $.getJSON("data.json", function(data) {
             console.log(data);
-            console.log("Data loading ended");
-            courses = data.v_label;
-            assignments = data.h_label;
+            h_labels = data.h_labels;
+            v_labels = data.v_labels;
             loadChart();
         });
 
@@ -112,7 +109,7 @@
                 .style("opacity", 0);
 
             var courseLabels = svg.selectAll(".courseLabel")
-                .data(courses)
+                .data(v_labels)
                 .enter().append("text")
                 .text(function(d) {
                     return d;
@@ -137,9 +134,8 @@
                 //.ticks(7)
                 .tickValues([gridSize * 0, gridSize * 1, gridSize * 2, gridSize * 3, gridSize * 4, gridSize * 5, gridSize * 6])
                 .tickFormat(function(d, i) {
-                    return assignments[i];
+                    return h_labels[i];
                 });
-            //.tickSize(gridSize);
 
             svg.append("g")
                 .attr("class", "x axis")
@@ -162,12 +158,8 @@
                         };
                     },
                     function(error, data) {
-                        // var colorScale = d3.scale.quantile()
-                        //     .domain([0, buckets - 1, d3.max(data, function (d) { return d.meanScore; })])
-                        //     .range(colors);
-
                         var colorScale = d3.scale.linear()
-                            .domain([0, 13, 25, 38, 50, 63, 75, 87, 100]) // d3.max(data, function (d) { return d.meanScore; })])
+                            .domain([0, 13, 25, 38, 50, 63, 75, 87, 100])
                             .range(colors);
 
                         var cards = svg.selectAll(".assignment")
@@ -203,8 +195,6 @@
                                     .duration(500)
                                     .style("opacity", 0);
                             });
-                        // .append("svg:title")
-                        // .text(function(d) { return d; });
 
                         cards.transition().duration(1000)
                             .style("fill", function(d) {
@@ -218,7 +208,6 @@
                         cards.exit().remove();
 
                         var legend = svg.selectAll(".legend")
-                            // .data([0].concat(colorScale.quantiles()), function(d) { return d; });
                             .data(colorScale.domain());
 
                         legend.enter().append("g")
@@ -248,7 +237,6 @@
                         legend.exit().remove();
                     });
             };
-
             heatmapChart(datasets[0]);
         }
     </script>
