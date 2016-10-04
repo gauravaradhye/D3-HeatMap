@@ -1,0 +1,30 @@
+[{
+        "v_label": ["Assignment 1", "Assignment 2", "Midterm 1", "Assignment 3", "Midterm 2", "Assignment 4", "Final"],
+        "h_label": ["Fall 2013", "Spring 2014", "Fall 2014", "Spring 2015", "Fall 2015", "Spring 2016", "Fall 2016"],
+        "font-size": 12,
+        "font-face": "Arial",
+        "color_scheme": [{
+            "default": "#456AED"
+        }, {
+            "-1 - -.5": "#AAABBB"
+        }, {
+            "-.5 - 0": "#AAABBB"
+        }, {
+            "0 - 0.5": "#AAABBB"
+        }, {
+            "0.5 - 1": "#AAABBB"
+        }],
+        "content": [
+            [{
+                "text": 0.4
+            }, {}],
+            [{
+                "comment": 0.4
+            }, {}],
+            [{
+                "comment": 0.4
+            }, {}],
+            [{
+                "comment": 0.4
+            }, {}]
+        ],
