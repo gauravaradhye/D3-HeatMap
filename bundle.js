@@ -1,7 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var $ = require("jquery")
 var d3 = require("d3")
-    //var d3 = require("d3-scale")
+var HashMap = require("hashmap")
 
 var margin = {
         top: 100,
@@ -28,22 +28,76 @@ var margin = {
     v_labels = [],
     default_value = null,
     default_color = null,
-    color_ranges = [];
+    color_ranges = [],
+    range_hashmap = new HashMap(),
+    uniqueValues = [],
+    default_value = null,
+    default_color = null,
+    minimum_value = null,
+    minimum_color = null,
+    maximum_value = null,
+    maximum_color = null;
 
 $.getJSON("data.json", function(data) {
-    console.log(data);
+    //console.log(data);
     h_labels = data.h_labels;
     v_labels = data.v_labels;
     color_ranges = data.color_scheme.ranges;
-    range_values = get_range_values(data.color_scheme.ranges);
+    uniqueValues = get_range_values(data.color_scheme.ranges);
+
+    default_value = data.color_scheme.default_value;
+    default_color = data.color_scheme.default_color;
+    minimum_value = uniqueValues[0]
+    minimum_color = getRangeWhereMinimumIs(minimum_value, color_ranges);
+    maximum_value = uniqueValues[uniqueValues.length - 1];
+    maximum_color = getRangeWhereMaximumIs(maximum_value, color_ranges);
+
+    uniqueValues.splice(0, 1);
+    //console.log(uniqueValues);
+
+    var iterator = null;
+    for (var i = 0; i < uniqueValues.length; i++) {
+        for (var j = 0; j < color_ranges.length; j++) {
+            if (uniqueValues[i] === color_ranges[j].maximum) {
+                range_hashmap[uniqueValues[i]] = color_ranges[j];
+                break;
+            }
+        }
+    }
+
+    console.log(range_hashmap);
     loadChart();
 });
 
+function getRangeWhereMinimumIs(value, color_ranges) {
+    console.log(color_ranges);
+    for (var i = 0; i < color_ranges.length; i++) {
+        console.log(color_ranges[i].minimum);
+        if (color_ranges[i].minimum === value) {
+            return color_ranges[i];
+        }
+    }
+    alert("Data related to ranges is not passed correctly.");
+    return null;
+}
+
+function getRangeWhereMaximumIs(value, color_ranges) {
+    var range = null;
+    for (var i = 0; i < color_ranges.length; i++) {
+        console.log(color_ranges[i].maximum);
+        if (color_ranges[i].maximum === value) {
+            return color_ranges[i];
+        }
+    }
+    alert("Data related to ranges is not passed correctly.");
+    return null;
+}
+
 function get_range_values(ranges) {
-    console.log(ranges);
+    //console.log(ranges);
     values = []
     for (var i = 0; i < ranges.length; i++) {
-        console.log(ranges[i])
+        //console.log(ranges[i])
         values.push(ranges[i].minimum)
         values.push(ranges[i].maximum)
     }
@@ -52,7 +106,7 @@ function get_range_values(ranges) {
         if ($.inArray(el, uniqueValues) === -1)
             uniqueValues.push(el);
     });
-    console.log(uniqueValues);
+    return uniqueValues;
 }
 
 function loadChart() {
@@ -164,7 +218,7 @@ function loadChart() {
     heatmapChart(datasets[0]);
 }
 
-},{"d3":2,"jquery":3}],2:[function(require,module,exports){
+},{"d3":2,"hashmap":3,"jquery":4}],2:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.17"
@@ -9720,6 +9774,198 @@ function loadChart() {
   if (typeof define === "function" && define.amd) this.d3 = d3, define(d3); else if (typeof module === "object" && module.exports) module.exports = d3; else this.d3 = d3;
 }();
 },{}],3:[function(require,module,exports){
+/**
+ * HashMap - HashMap Class for JavaScript
+ * @author Ariel Flesler <aflesler@gmail.com>
+ * @version 2.0.6
+ * Homepage: https://github.com/flesler/hashmap
+ */
+
+(function(factory) {
+	/* global define */
+	if (typeof define === 'function' && define.amd) {
+		// AMD. Register as an anonymous module.
+		define([], factory);
+	} else if (typeof module === 'object') {
+		// Node js environment
+		var HashMap = module.exports = factory();
+		// Keep it backwards compatible
+		HashMap.HashMap = HashMap;
+	} else {
+		// Browser globals (this is window)
+		this.HashMap = factory();
+	}
+}(function() {
+
+	function HashMap(other) {
+		this.clear();
+		switch (arguments.length) {
+			case 0: break;
+			case 1: this.copy(other); break;
+			default: multi(this, arguments); break;
+		}
+	}
+
+	var proto = HashMap.prototype = {
+		constructor:HashMap,
+
+		get:function(key) {
+			var data = this._data[this.hash(key)];
+			return data && data[1];
+		},
+
+		set:function(key, value) {
+			// Store original key as well (for iteration)
+			var hash = this.hash(key);
+			if ( !(hash in this._data) ) {
+				this._count++;
+			}
+			this._data[hash] = [key, value];
+		},
+
+		multi:function() {
+			multi(this, arguments);
+		},
+
+		copy:function(other) {
+			for (var hash in other._data) {
+				if ( !(hash in this._data) ) {
+					this._count++;
+				}
+				this._data[hash] = other._data[hash];
+			}
+		},
+
+		has:function(key) {
+			return this.hash(key) in this._data;
+		},
+
+		search:function(value) {
+			for (var key in this._data) {
+				if (this._data[key][1] === value) {
+					return this._data[key][0];
+				}
+			}
+
+			return null;
+		},
+
+		remove:function(key) {
+			var hash = this.hash(key);
+			if ( hash in this._data ) {
+				this._count--;
+				delete this._data[hash];
+			}
+		},
+
+		type:function(key) {
+			var str = Object.prototype.toString.call(key);
+			var type = str.slice(8, -1).toLowerCase();
+			// Some browsers yield DOMWindow for null and undefined, works fine on Node
+			if (type === 'domwindow' && !key) {
+				return key + '';
+			}
+			return type;
+		},
+
+		keys:function() {
+			var keys = [];
+			this.forEach(function(_, key) { keys.push(key); });
+			return keys;
+		},
+
+		values:function() {
+			var values = [];
+			this.forEach(function(value) { values.push(value); });
+			return values;
+		},
+
+		count:function() {
+			return this._count;
+		},
+
+		clear:function() {
+			// TODO: Would Object.create(null) make any difference
+			this._data = {};
+			this._count = 0;
+		},
+
+		clone:function() {
+			return new HashMap(this);
+		},
+
+		hash:function(key) {
+			switch (this.type(key)) {
+				case 'undefined':
+				case 'null':
+				case 'boolean':
+				case 'number':
+				case 'regexp':
+					return key + '';
+
+				case 'date':
+					return '♣' + key.getTime();
+
+				case 'string':
+					return '♠' + key;
+
+				case 'array':
+					var hashes = [];
+					for (var i = 0; i < key.length; i++) {
+						hashes[i] = this.hash(key[i]);
+					}
+					return '♥' + hashes.join('⁞');
+
+				default:
+					// TODO: Don't use expandos when Object.defineProperty is not available?
+					if (!key.hasOwnProperty('_hmuid_')) {
+						key._hmuid_ = ++HashMap.uid;
+						hide(key, '_hmuid_');
+					}
+
+					return '♦' + key._hmuid_;
+			}
+		},
+
+		forEach:function(func, ctx) {
+			for (var key in this._data) {
+				var data = this._data[key];
+				func.call(ctx || this, data[1], data[0]);
+			}
+		}
+	};
+
+	HashMap.uid = 0;
+
+	//- Add chaining to all methods that don't return something
+
+	['set','multi','copy','remove','clear','forEach'].forEach(function(method) {
+		var fn = proto[method];
+		proto[method] = function() {
+			fn.apply(this, arguments);
+			return this;
+		};
+	});
+
+	//- Utils
+
+	function multi(map, args) {
+		for (var i = 0; i < args.length; i += 2) {
+			map.set(args[i], args[i+1]);
+		}
+	}
+
+	function hide(obj, prop) {
+		// Make non iterable if supported
+		if (Object.defineProperty) {
+			Object.defineProperty(obj, prop, {enumerable:false});
+		}
+	}
+
+	return HashMap;
+}));
+
+},{}],4:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v3.1.1
  * https://jquery.com/

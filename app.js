@@ -1,6 +1,6 @@
 var $ = require("jquery")
 var d3 = require("d3")
-    //var d3 = require("d3-scale")
+var HashMap = require("hashmap")
 
 var margin = {
         top: 100,
@@ -27,22 +27,74 @@ var margin = {
     v_labels = [],
     default_value = null,
     default_color = null,
-    color_ranges = [];
+    color_ranges = [],
+    range_hashmap = new HashMap(),
+    uniqueValues = [],
+    default_value = null,
+    default_color = null,
+    minimum_value = null,
+    minimum_color = null,
+    maximum_value = null,
+    maximum_color = null;
 
 $.getJSON("data.json", function(data) {
-    console.log(data);
+    //console.log(data);
     h_labels = data.h_labels;
     v_labels = data.v_labels;
     color_ranges = data.color_scheme.ranges;
-    range_values = get_range_values(data.color_scheme.ranges);
+    uniqueValues = get_range_values(data.color_scheme.ranges);
+
+    default_value = data.color_scheme.default_value;
+    default_color = data.color_scheme.default_color;
+    minimum_value = uniqueValues[0]
+    minimum_color = getRangeWhereMinimumIs(minimum_value, color_ranges);
+    maximum_value = uniqueValues[uniqueValues.length - 1];
+    maximum_color = getRangeWhereMaximumIs(maximum_value, color_ranges);
+
+    uniqueValues.splice(0, 1);
+
+    var iterator = null;
+    for (var i = 0; i < uniqueValues.length; i++) {
+        for (var j = 0; j < color_ranges.length; j++) {
+            if (uniqueValues[i] === color_ranges[j].maximum) {
+                range_hashmap[uniqueValues[i]] = color_ranges[j];
+                break;
+            }
+        }
+    }
+    console.log(range_hashmap);
     loadChart();
 });
 
+function getRangeWhereMinimumIs(value, color_ranges) {
+    console.log(color_ranges);
+    for (var i = 0; i < color_ranges.length; i++) {
+        console.log(color_ranges[i].minimum);
+        if (color_ranges[i].minimum === value) {
+            return color_ranges[i];
+        }
+    }
+    alert("Data related to ranges is not passed correctly.");
+    return null;
+}
+
+function getRangeWhereMaximumIs(value, color_ranges) {
+    var range = null;
+    for (var i = 0; i < color_ranges.length; i++) {
+        console.log(color_ranges[i].maximum);
+        if (color_ranges[i].maximum === value) {
+            return color_ranges[i];
+        }
+    }
+    alert("Data related to ranges is not passed correctly.");
+    return null;
+}
+
 function get_range_values(ranges) {
-    console.log(ranges);
+    //console.log(ranges);
     values = []
     for (var i = 0; i < ranges.length; i++) {
-        console.log(ranges[i])
+        //console.log(ranges[i])
         values.push(ranges[i].minimum)
         values.push(ranges[i].maximum)
     }
@@ -51,7 +103,7 @@ function get_range_values(ranges) {
         if ($.inArray(el, uniqueValues) === -1)
             uniqueValues.push(el);
     });
-    console.log(uniqueValues);
+    return uniqueValues;
 }
 
 function loadChart() {

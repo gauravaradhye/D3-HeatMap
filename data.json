@@ -4,31 +4,23 @@
     "font-size": 12,
     "font-face": "Arial",
     "color_scheme": {
-        "default": "#F4D03F",
+        "default_color": "#F4D03F",
         "default_value": 0,
         "ranges": [{
             "minimum": -1,
             "maximum": -0.5,
-            "exclusiveMaximum": true,
-            "exclusiveMinimum": false,
             "color": "#E74C3C"
         }, {
             "minimum": -0.5,
             "maximum": 0,
-            "exclusiveMaximum": true,
-            "exclusiveMinimum": true,
             "color": "#F1948A"
         }, {
             "minimum": 0,
             "maximum": 0.5,
-            "exclusiveMaximum": true,
-            "exclusiveMinimum": true,
             "color": "#82E0AA"
         }, {
             "minimum": 0.5,
             "maximum": 1,
-            "exclusiveMaximum": false,
-            "exclusiveMinimum": false,
             "color": "#229954"
         }]
     },
