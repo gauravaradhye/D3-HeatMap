@@ -1,0 +1,27 @@
+{
+  "name": "heatmap",
+  "version": "1.0.0",
+  "description": "HeatMap Chart",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify app.js -o bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gauravaradhye/HeatMap.git"
+  },
+  "author": "Gaurav Aradhye",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gauravaradhye/HeatMap/issues"
+  },
+  "homepage": "https://github.com/gauravaradhye/HeatMap#readme",
+  "devDependencies": {
+    "browserify": "^13.1.0"
+  },
+  "dependencies": {
+    "d3-scale": "^1.0.3",
+    "jquery": "^3.1.1"
+  }
+}
