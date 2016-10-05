@@ -158,13 +158,13 @@ function loadChart(data) {
         }
 
         console.log(data);
-        var colorScale = d3.scale.linear().domain([
-            0,
-            25,
-            50,
-            75,
-            100
-        ]).range(colors);
+        // var colorScale = d3.scale.linear().domain([
+        //     0,
+        //     25,
+        //     50,
+        //     75,
+        //     100
+        // ]).range(colors);
 
         var cards = svg.selectAll(".assignment").data(data);
 
@@ -182,7 +182,7 @@ function loadChart(data) {
         });
 
         cards.transition().duration(1000).style("fill", function(d) {
-            return colorScale(d.value);
+            return get_fill_color(d.value);
         });
 
         cards.select("title").text(function(d) {
@@ -191,23 +191,27 @@ function loadChart(data) {
 
         cards.exit().remove();
 
-        var legend = svg.selectAll(".legend").data(colorScale.domain());
+        function get_fill_color(value) {
+            return colors[0];
+        }
 
-        legend.enter().append("g").attr("class", "legend");
-
-        legend.append("rect").attr("x", function(d, i) {
-            return legendElementWidth * i;
-        }).attr("y", height).attr("width", legendElementWidth).attr("height", gridSize / 2).style("fill", function(d, i) {
-            return colors[i];
-        });
-
-        legend.append("text").attr("class", "mono").text(function(d) {
-            return "≥ " + Math.round(d);
-        }).attr("x", function(d, i) {
-            return legendElementWidth * i;
-        }).attr("y", height + gridSize);
-
-        legend.exit().remove();
+        // var legend = svg.selectAll(".legend").data(colorScale.domain());
+        //
+        // legend.enter().append("g").attr("class", "legend");
+        //
+        // legend.append("rect").attr("x", function(d, i) {
+        //     return legendElementWidth * i;
+        // }).attr("y", height).attr("width", legendElementWidth).attr("height", gridSize / 2).style("fill", function(d, i) {
+        //     return colors[i];
+        // });
+        //
+        // legend.append("text").attr("class", "mono").text(function(d) {
+        //     return "≥ " + Math.round(d);
+        // }).attr("x", function(d, i) {
+        //     return legendElementWidth * i;
+        // }).attr("y", height + gridSize);
+        //
+        // legend.exit().remove();
     };
     heatmapChart();
 }
