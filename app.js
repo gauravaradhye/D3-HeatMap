@@ -144,8 +144,18 @@ function loadChart(data) {
     svg.append("g").attr("class", "x axis").call(xAxis).selectAll("text").attr("class", "mono").style("font-weight", "bold").style("text-anchor", "start").attr("dx", "2.25em").attr("dy", "0.4em").attr("transform", "rotate(-45)");
 
     var heatmapChart = function() {
-        data = data.content;
-
+        raw_data = data.content;
+        data = [];
+        for (var i = 0; i < raw_data.length; i++) {
+            for (var j = 0; j < raw_data.length; j++) {
+                data.push({
+                    "x": i,
+                    "y": j,
+                    "text": raw_data[i][j].text,
+                    "value": raw_data[i][j].value
+                });
+            }
+        }
 
         console.log(data);
         var colorScale = d3.scale.linear().domain([
@@ -161,12 +171,12 @@ function loadChart(data) {
         cards.append("title");
 
         cards.enter().append("rect").attr("x", function(d) {
-            return (d.x - 1) * gridSize;
+            return (d.x) * gridSize;
         }).attr("y", function(d) {
-            return (d.y - 1) * gridSize;
+            return (d.y) * gridSize;
         }).attr("rx", 4).attr("ry", 4).attr("class", "hour bordered").attr("width", gridSize).attr("height", gridSize).style("fill", colors[0]).on("mouseover", function(d) {
             div.transition().duration(200).style("opacity", .65);
-            div.html("Mean score: " + d.text + "<br/>").style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
+            div.html(d.text + "<br/>").style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
         }).on("mouseout", function(d) {
             div.transition().duration(500).style("opacity", 0);
         });
