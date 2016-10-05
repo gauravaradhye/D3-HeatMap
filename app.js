@@ -3,7 +3,7 @@ var d3 = require("d3")
     //var d3 = require("d3-scale")
 
 var margin = {
-        top: 110,
+        top: 100,
         right: 0,
         bottom: 100,
         left: 140
@@ -73,14 +73,13 @@ function loadChart() {
             "courseLabel mono axis");
     });
 
-    var x = d3.scaleLinear().domain([
+    var x = d3.scale.linear().domain([
         0, gridSize * 7
     ]).range([
         0, gridSize * 7
     ]);
 
-    var xAxis = d3.axisTop(x)
-        //.ticks(7)
+    var xAxis = d3.svg.axis(x)
         .tickValues([
             gridSize * 0,
             gridSize * 1,
@@ -103,7 +102,7 @@ function loadChart() {
                 meanScore: +d.meanScore
             };
         }, function(error, data) {
-            var colorScale = d3.scaleLinear().domain([
+            var colorScale = d3.scale.linear().domain([
                 0,
                 13,
                 25,
