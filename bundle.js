@@ -17,12 +17,12 @@ var margin = {
         "#C0392B",
         "#E74C3C",
         "#F39C12",
-        "#F4D03F",
-        "#ABEBC6",
-        "#58D68D",
-        "#239B56",
-        "#0E6655",
-        "#154360"
+        "#F4D03F"
+        // "#ABEBC6",
+        // "#58D68D",
+        // "#239B56",
+        // "#0E6655",
+        // "#154360"
     ],
     h_labels = [],
     v_labels = [],
@@ -53,7 +53,6 @@ $.getJSON("data.json", function(data) {
     maximum_color = getRangeWhereMaximumIs(maximum_value, color_ranges);
 
     uniqueValues.splice(0, 1);
-    //console.log(uniqueValues);
 
     var iterator = null;
     for (var i = 0; i < uniqueValues.length; i++) {
@@ -64,9 +63,8 @@ $.getJSON("data.json", function(data) {
             }
         }
     }
-
     console.log(range_hashmap);
-    loadChart();
+    loadChart(data);
 });
 
 function getRangeWhereMinimumIs(value, color_ranges) {
@@ -109,10 +107,7 @@ function get_range_values(ranges) {
     return uniqueValues;
 }
 
-function loadChart() {
-    datasets = ["data.tsv", "data2.tsv"];
-    datasets_names = ["Course 1", "Course 2"]
-
+function loadChart(data) {
     var svg = d3.select("#chart").append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // Define the div for the tooltip
@@ -129,9 +124,9 @@ function loadChart() {
     });
 
     var x = d3.scale.linear().domain([
-        0, gridSize * 7
+        0, gridSize * h_labels.length
     ]).range([
-        0, gridSize * 7
+        0, gridSize * h_labels.length
     ]);
 
     var xAxis = d3.svg.axis(x)
@@ -149,73 +144,67 @@ function loadChart() {
 
     svg.append("g").attr("class", "x axis").call(xAxis).selectAll("text").attr("class", "mono").style("font-weight", "bold").style("text-anchor", "start").attr("dx", "2.25em").attr("dy", "0.4em").attr("transform", "rotate(-45)");
 
-    var heatmapChart = function(tsvFile) {
-        d3.tsv(tsvFile, function(d) {
-            return {
-                course: +d.course,
-                assignment: +d.assignment,
-                meanScore: +d.meanScore
-            };
-        }, function(error, data) {
-            var colorScale = d3.scale.linear().domain([
-                0,
-                13,
-                25,
-                38,
-                50,
-                63,
-                75,
-                87,
-                100
-            ]).range(colors);
+    var heatmapChart = function() {
+        data = data.content;
+        console.log(data);
+        var colorScale = d3.scale.linear().domain([
+            0,
+            13,
+            25,
+            38,
+            50,
+            63,
+            75,
+            87,
+            100
+        ]).range(colors);
 
-            var cards = svg.selectAll(".assignment").data(data, function(d) {
-                return d.course + ':' + d.assignment;
-            });
-
-            cards.append("title");
-
-            cards.enter().append("rect").attr("x", function(d) {
-                return (d.assignment - 1) * gridSize;
-            }).attr("y", function(d) {
-                return (d.course - 1) * gridSize;
-            }).attr("rx", 4).attr("ry", 4).attr("class", "hour bordered").attr("width", gridSize).attr("height", gridSize).style("fill", colors[0]).on("mouseover", function(d) {
-                div.transition().duration(200).style("opacity", .65);
-                div.html("Mean score: " + d.meanScore + "<br/>").style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
-            }).on("mouseout", function(d) {
-                div.transition().duration(500).style("opacity", 0);
-            });
-
-            cards.transition().duration(1000).style("fill", function(d) {
-                return colorScale(d.meanScore);
-            });
-
-            cards.select("title").text(function(d) {
-                return d.meanScore;
-            });
-
-            cards.exit().remove();
-
-            var legend = svg.selectAll(".legend").data(colorScale.domain());
-
-            legend.enter().append("g").attr("class", "legend");
-
-            legend.append("rect").attr("x", function(d, i) {
-                return legendElementWidth * i;
-            }).attr("y", height).attr("width", legendElementWidth).attr("height", gridSize / 2).style("fill", function(d, i) {
-                return colors[i];
-            });
-
-            legend.append("text").attr("class", "mono").text(function(d) {
-                return "≥ " + Math.round(d);
-            }).attr("x", function(d, i) {
-                return legendElementWidth * i;
-            }).attr("y", height + gridSize);
-
-            legend.exit().remove();
+        var cards = svg.selectAll(".assignment").data(data, function(d) {
+            return d.course + ':' + d.assignment;
         });
+
+        cards.append("title");
+
+        cards.enter().append("rect").attr("x", function(d) {
+            return (d.assignment - 1) * gridSize;
+        }).attr("y", function(d) {
+            return (d.course - 1) * gridSize;
+        }).attr("rx", 4).attr("ry", 4).attr("class", "hour bordered").attr("width", gridSize).attr("height", gridSize).style("fill", colors[0]).on("mouseover", function(d) {
+            div.transition().duration(200).style("opacity", .65);
+            div.html("Mean score: " + d.meanScore + "<br/>").style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
+        }).on("mouseout", function(d) {
+            div.transition().duration(500).style("opacity", 0);
+        });
+
+        cards.transition().duration(1000).style("fill", function(d) {
+            return colorScale(d.meanScore);
+        });
+
+        cards.select("title").text(function(d) {
+            return d.meanScore;
+        });
+
+        cards.exit().remove();
+
+        var legend = svg.selectAll(".legend").data(colorScale.domain());
+
+        legend.enter().append("g").attr("class", "legend");
+
+        legend.append("rect").attr("x", function(d, i) {
+            return legendElementWidth * i;
+        }).attr("y", height).attr("width", legendElementWidth).attr("height", gridSize / 2).style("fill", function(d, i) {
+            return colors[i];
+        });
+
+        legend.append("text").attr("class", "mono").text(function(d) {
+            return "≥ " + Math.round(d);
+        }).attr("x", function(d, i) {
+            return legendElementWidth * i;
+        }).attr("y", height + gridSize);
+
+        legend.exit().remove();
     };
-    heatmapChart(datasets[0]);
+    heatmapChart();
 }
 
 },{"d3":2,"hashmap":3,"jquery":4}],2:[function(require,module,exports){

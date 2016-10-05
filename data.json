@@ -24,5 +24,21 @@
             "color": "#229954"
         }]
     },
-    "content": []
+    "content": [{
+        "course": 1,
+        "assignment": 2,
+        "meanScore": 24
+    }, {
+        "course": 2,
+        "assignment": 2,
+        "meanScore": 44
+    }, {
+        "course": 3,
+        "assignment": 2,
+        "meanScore": 64
+    }, {
+        "course": 4,
+        "assignment": 2,
+        "meanScore": 84
+    }]
 }
