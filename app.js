@@ -148,19 +148,13 @@ function loadChart(data) {
         console.log(data);
         var colorScale = d3.scale.linear().domain([
             0,
-            13,
             25,
-            38,
             50,
-            63,
             75,
-            87,
             100
         ]).range(colors);
 
-        var cards = svg.selectAll(".assignment").data(data, function(d) {
-            return d.course + ':' + d.assignment;
-        });
+        var cards = svg.selectAll(".assignment").data(data);
 
         cards.append("title");
 
