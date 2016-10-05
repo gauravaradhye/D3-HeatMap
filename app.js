@@ -71,7 +71,7 @@ function getRangeWhereMinimumIs(value, color_ranges) {
     for (var i = 0; i < color_ranges.length; i++) {
         console.log(color_ranges[i].minimum);
         if (color_ranges[i].minimum === value) {
-            return color_ranges[i];
+            return color_ranges[i].color;
         }
     }
     alert("Data related to ranges is not passed correctly.");
@@ -83,7 +83,7 @@ function getRangeWhereMaximumIs(value, color_ranges) {
     for (var i = 0; i < color_ranges.length; i++) {
         console.log(color_ranges[i].maximum);
         if (color_ranges[i].maximum === value) {
-            return color_ranges[i];
+            return color_ranges[i].color;
         }
     }
     alert("Data related to ranges is not passed correctly.");
@@ -149,8 +149,8 @@ function loadChart(data) {
         for (var i = 0; i < raw_data.length; i++) {
             for (var j = 0; j < raw_data.length; j++) {
                 data.push({
-                    "x": i,
-                    "y": j,
+                    "x": j,
+                    "y": i,
                     "text": raw_data[i][j].text,
                     "value": raw_data[i][j].value
                 });
@@ -158,13 +158,6 @@ function loadChart(data) {
         }
 
         console.log(data);
-        // var colorScale = d3.scale.linear().domain([
-        //     0,
-        //     25,
-        //     50,
-        //     75,
-        //     100
-        // ]).range(colors);
 
         var cards = svg.selectAll(".assignment").data(data);
 
@@ -192,7 +185,24 @@ function loadChart(data) {
         cards.exit().remove();
 
         function get_fill_color(value) {
-            return colors[0];
+            if (value === default_value) {
+                return default_color;
+            } else if (value === minimum_value) {
+                return minimum_color;
+            } else if (value === maximum_value) {
+                return maximum_color;
+            }
+
+            console.log("Maximu color: " + maximum_color);
+
+            for (var i = 0; i < uniqueValues.length; i++) {
+                console.log(value + " Compared with " + uniqueValues[i]);
+                if (value < uniqueValues[i]) {
+                    return range_hashmap[uniqueValues[i]].color;
+                }
+            }
+
+            return range_hashmap[uniqueValues[uniqueValues.length - 1]].color;
         }
 
         // var legend = svg.selectAll(".legend").data(colorScale.domain());

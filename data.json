@@ -26,157 +26,157 @@
     },
     "content": [
         [{
-            "value": 24,
+            "value": 0,
+            "text": "neatral"
+        }, {
+            "value": 0.5,
+            "text": "half better"
+        }, {
+            "value": 1,
+            "text": "very good"
+        }, {
+            "value": -1,
+            "text": "very bad"
+        }, {
+            "value": -0.25,
+            "text": "little bit bad"
+        }, {
+            "value": -0.75,
+            "text": "little more bad"
+        }, {
+            "value": 0,
+            "text": "neutral"
+        }],
+        [{
+            "value": 0,
             "text": "sample text 1"
         }, {
-            "value": 44,
+            "value": 0.5,
             "text": "sample text 2"
         }, {
-            "value": 64,
+            "value": 1,
             "text": "sample text 3"
         }, {
-            "value": 84,
+            "value": -1,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.25,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.75,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": 0,
             "text": "sample text 4"
         }],
         [{
-            "value": 24,
+            "value": 0,
             "text": "sample text 1"
         }, {
-            "value": 44,
+            "value": 0.5,
             "text": "sample text 2"
         }, {
-            "value": 64,
+            "value": 1,
             "text": "sample text 3"
         }, {
-            "value": 84,
+            "value": -1,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.25,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.75,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": 0,
             "text": "sample text 4"
         }],
         [{
-            "value": 24,
+            "value": 0,
             "text": "sample text 1"
         }, {
-            "value": 44,
+            "value": 0.5,
             "text": "sample text 2"
         }, {
-            "value": 64,
+            "value": 1,
             "text": "sample text 3"
         }, {
-            "value": 84,
+            "value": -1,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.25,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.75,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": 0,
             "text": "sample text 4"
         }],
         [{
-            "value": 24,
+            "value": 0,
             "text": "sample text 1"
         }, {
-            "value": 44,
+            "value": 0.5,
             "text": "sample text 2"
         }, {
-            "value": 64,
+            "value": 1,
             "text": "sample text 3"
         }, {
-            "value": 84,
+            "value": -1,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.25,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.75,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": 0,
             "text": "sample text 4"
         }],
         [{
-            "value": 24,
+            "value": 0,
             "text": "sample text 1"
         }, {
-            "value": 44,
+            "value": 0.5,
             "text": "sample text 2"
         }, {
-            "value": 64,
+            "value": 1,
             "text": "sample text 3"
         }, {
-            "value": 84,
+            "value": -1,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.25,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.75,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": 0,
             "text": "sample text 4"
         }],
         [{
-            "value": 24,
+            "value": 0,
             "text": "sample text 1"
         }, {
-            "value": 44,
+            "value": 0.5,
             "text": "sample text 2"
         }, {
-            "value": 64,
+            "value": 1,
             "text": "sample text 3"
         }, {
-            "value": 84,
+            "value": -1,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.25,
             "text": "sample text 4"
         }, {
-            "value": 84,
+            "value": -0.75,
             "text": "sample text 4"
         }, {
-            "value": 84,
-            "text": "sample text 4"
-        }],
-        [{
-            "value": 24,
-            "text": "sample text 1"
-        }, {
-            "value": 44,
-            "text": "sample text 2"
-        }, {
-            "value": 64,
-            "text": "sample text 3"
-        }, {
-            "value": 84,
-            "text": "sample text 4"
-        }, {
-            "value": 84,
-            "text": "sample text 4"
-        }, {
-            "value": 84,
-            "text": "sample text 4"
-        }, {
-            "value": 84,
+            "value": 0,
             "text": "sample text 4"
         }]
     ]
