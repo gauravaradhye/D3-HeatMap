@@ -25,20 +25,24 @@
         }]
     },
     "content": [{
-        "course": 1,
-        "assignment": 2,
-        "meanScore": 24
+        "x": 1,
+        "y": 2,
+        "value": 24,
+        "text": "sample text 1"
     }, {
-        "course": 2,
-        "assignment": 2,
-        "meanScore": 44
+        "x": 2,
+        "y": 2,
+        "value": 44,
+        "text": "sample text 2"
     }, {
-        "course": 3,
-        "assignment": 2,
-        "meanScore": 64
+        "x": 3,
+        "y": 2,
+        "value": 64,
+        "text": "sample text 3"
     }, {
-        "course": 4,
-        "assignment": 2,
-        "meanScore": 84
+        "x": 4,
+        "y": 2,
+        "value": 84,
+        "text": "sample text 4"
     }]
 }

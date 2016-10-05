@@ -145,6 +145,8 @@ function loadChart(data) {
 
     var heatmapChart = function() {
         data = data.content;
+
+
         console.log(data);
         var colorScale = d3.scale.linear().domain([
             0,
@@ -159,22 +161,22 @@ function loadChart(data) {
         cards.append("title");
 
         cards.enter().append("rect").attr("x", function(d) {
-            return (d.assignment - 1) * gridSize;
+            return (d.x - 1) * gridSize;
         }).attr("y", function(d) {
-            return (d.course - 1) * gridSize;
+            return (d.y - 1) * gridSize;
         }).attr("rx", 4).attr("ry", 4).attr("class", "hour bordered").attr("width", gridSize).attr("height", gridSize).style("fill", colors[0]).on("mouseover", function(d) {
             div.transition().duration(200).style("opacity", .65);
-            div.html("Mean score: " + d.meanScore + "<br/>").style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
+            div.html("Mean score: " + d.text + "<br/>").style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
         }).on("mouseout", function(d) {
             div.transition().duration(500).style("opacity", 0);
         });
 
         cards.transition().duration(1000).style("fill", function(d) {
-            return colorScale(d.meanScore);
+            return colorScale(d.value);
         });
 
         cards.select("title").text(function(d) {
-            return d.meanScore;
+            return d.value;
         });
 
         cards.exit().remove();
