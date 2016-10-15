@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://dimplejs.org/dist/dimple.v2.1.6.min.js"></script>
+  </head>
+  <body>
+    <div>
+    <h3>Tooltip Chart</h3>
+    <h5>Average marks obtained by students in the different criteria within a given rubric for selected assignment/project.</h5>
+    </div>
+    <script type="text/javascript">
+    // Add a simple SVG element to the body of this document
+      var svg = dimple.newSvg("body", 800, 600);
+
+      // Create a dataset for 7 students and 5 criterions ( 35 avgMarks)
+      var studentData = [
+        {"studentName" : "arya", "criterion" : "criterion1", "avgMarks" : 38, "variance": 10}, 
+        {"studentName" : "arya", "criterion" : "criterion2", "avgMarks" : 75.2, "variance":5.8}, 
+        {"studentName" : "arya", "criterion" : "criterion3", "avgMarks" : 45.8, "variance": 4.5},  
+        {"studentName" : "arya", "criterion" : "criterion4", "avgMarks" : 48, "variance":5.6},
+        {"studentName" : "arya", "criterion" : "criterion5", "avgMarks" : 85.6, "variance":9},
+
+        {"studentName" : "jon", "criterion" : "criterion1", "avgMarks" : 83, "variance":3.4},
+        {"studentName" : "jon", "criterion" : "criterion2", "avgMarks" : 93, "variance":6.7},
+        {"studentName" : "jon", "criterion" : "criterion3", "avgMarks" : 100, "variance":4.5},
+        {"studentName" : "jon", "criterion" : "criterion4", "avgMarks" : 89, "variance":5.6},
+        {"studentName" : "jon", "criterion" : "criterion5", "avgMarks" : 67, "variance":1.7},
+        
+        {"studentName" : "psinaik", "criterion" : "criterion1", "avgMarks" : 67, "variance":4.7},
+        {"studentName" : "psinaik", "criterion" : "criterion2", "avgMarks" : 88, "variance":9.9},
+        {"studentName" : "psinaik", "criterion" : "criterion3", "avgMarks" : 67, "variance":2.3},
+        {"studentName" : "psinaik", "criterion" : "criterion4", "avgMarks" : 56, "variance":1.5},
+        {"studentName" : "psinaik", "criterion" : "criterion5", "avgMarks" : 97, "variance":5.6},
+        
+        {"studentName" : "sansa", "criterion" : "criterion1", "avgMarks" : 65, "variance":2.5}, 
+        {"studentName" : "sansa", "criterion" : "criterion2", "avgMarks" : 34, "variance":7.8},
+        {"studentName" : "sansa", "criterion" : "criterion3", "avgMarks" : 36, "variance":4.5},
+        {"studentName" : "sansa", "criterion" : "criterion4", "avgMarks" : 75.2, "variance":7.8}, 
+        {"studentName" : "sansa", "criterion" : "criterion5", "avgMarks" : 51.2, "variance":2.0},
+        
+        {"studentName" : "bran", "criterion" : "criterion1", "avgMarks" : 99, "variance":1.4},
+        {"studentName" : "bran", "criterion" : "criterion2", "avgMarks" : 53, "variance":1.6},
+        {"studentName" : "bran", "criterion" : "criterion3", "avgMarks" : 83, "variance":6.3},
+        {"studentName" : "bran", "criterion" : "criterion4", "avgMarks" : 43, "variance":8.1},
+        {"studentName" : "bran", "criterion" : "criterion5", "avgMarks" : 93, "variance":3.5},
+        
+        {"studentName" : "ned", "criterion" : "criterion1", "avgMarks" : 12, "variance": 1.5},
+        {"studentName" : "ned", "criterion" : "criterion2", "avgMarks" : 54, "variance": 15.6},
+        {"studentName" : "ned", "criterion" : "criterion3", "avgMarks" : 14, "variance": 2.5},
+        {"studentName" : "ned", "criterion" : "criterion4", "avgMarks" : 99, "variance": 5.6},
+        {"studentName" : "ned", "criterion" : "criterion5", "avgMarks" : 90, "variance": 2.6}, 
+        
+        {"studentName" : "lyanna", "criterion" : "criterion1", "avgMarks" : 43, "variance": 1.7},
+        {"studentName" : "lyanna", "criterion" : "criterion2", "avgMarks" : 39, "variance": 4.7},
+        {"studentName" : "lyanna", "criterion" : "criterion3", "avgMarks" : 90, "variance": 5.7},
+        {"studentName" : "lyanna", "criterion" : "criterion4", "avgMarks" : 90, "variance": 1.2},
+        {"studentName" : "lyanna", "criterion" : "criterion5", "avgMarks" : 90, "variance": 3.6}
+      ];
+
+      // 6 students, 5 reviewers, 5 criterions
+      // If multiple reviewers award nearly same marks, indication of a good review
+      // Mutiple reviewers giving contrasting marks, bad review
+
+      // Ex 1: Bad review
+      // Ex 2 : Good review
+      var studentReviewerData = [
+     
+        {"studentName" : "arya", "reviewer" : "r1", "criterion" : "criterion1", "marks" : 10}, 
+        {"studentName" : "arya", "reviewer" : "r2","criterion" : "criterion1", "marks" : 35}, 
+        {"studentName" : "arya", "reviewer" : "r3", "criterion" : "criterion1", "marks" : 100}, 
+        {"studentName" : "arya", "reviewer" : "r4","criterion" : "criterion1", "marks" : 12}, 
+        {"studentName" : "arya", "reviewer" : "r5", "criterion" : "criterion1", "marks" : 33}, 
+        
+        {"studentName" : "arya", "reviewer" : "r1", "criterion" : "criterion2", "marks" : 79}, 
+        {"studentName" : "arya", "reviewer" : "r2","criterion" : "criterion2", "marks" : 59}, 
+        {"studentName" : "arya", "reviewer" : "r3", "criterion" : "criterion2", "marks" : 80}, 
+        {"studentName" : "arya", "reviewer" : "r4","criterion" : "criterion2", "marks" : 80}, 
+        {"studentName" : "arya", "reviewer" : "r5", "criterion" : "criterion2", "marks" : 78}, 
+
+        {"studentName" : "arya", "reviewer" : "r1", "criterion" : "criterion3", "marks" : 43}, 
+        {"studentName" : "arya", "reviewer" : "r2","criterion" : "criterion3", "marks" : 37}, 
+        {"studentName" : "arya", "reviewer" : "r3", "criterion" : "criterion3", "marks" : 32}, 
+        {"studentName" : "arya", "reviewer" : "r4","criterion" : "criterion3", "marks" : 54}, 
+        {"studentName" : "arya", "reviewer" : "r5", "criterion" : "criterion3", "marks" : 63}, 
+       
+        {"studentName" : "arya", "reviewer" : "r1", "criterion" : "criterion4", "marks" : 43}, 
+        {"studentName" : "arya", "reviewer" : "r2","criterion" : "criterion4", "marks" : 48}, 
+        {"studentName" : "arya", "reviewer" : "r3", "criterion" : "criterion4", "marks" : 39}, 
+        {"studentName" : "arya", "reviewer" : "r4","criterion" : "criterion4", "marks" : 77}, 
+        {"studentName" : "arya", "reviewer" : "r5", "criterion" : "criterion4", "marks" : 33}, 
+
+        {"studentName" : "arya", "reviewer" : "r1", "criterion" : "criterion5", "marks" : 99}, 
+        {"studentName" : "arya", "reviewer" : "r2","criterion" : "criterion5", "marks" : 90}, 
+        {"studentName" : "arya", "reviewer" : "r3", "criterion" : "criterion5", "marks" : 63}, 
+        {"studentName" : "arya", "reviewer" : "r4","criterion" : "criterion5", "marks" : 93}, 
+        {"studentName" : "arya", "reviewer" : "r5", "criterion" : "criterion5", "marks" : 83}, 
+
+         {"studentName" : "lyanna", "reviewer" : "r1", "criterion" : "criterion1", "marks" : 35}, 
+        {"studentName" : "lyanna", "reviewer" : "r2","criterion" : "criterion1", "marks" : 67}, 
+        {"studentName" : "lyanna", "reviewer" : "r3", "criterion" : "criterion1", "marks" : 43}, 
+        {"studentName" : "lyanna", "reviewer" : "r4","criterion" : "criterion1", "marks" : 78}, 
+        {"studentName" : "lyanna", "reviewer" : "r5", "criterion" : "criterion1", "marks" : 99}, 
+
+        {"studentName" : "lyanna", "reviewer" : "r1", "criterion" : "criterion2", "marks" : 89}, 
+        {"studentName" : "lyanna", "reviewer" : "r2","criterion" : "criterion2", "marks" : 22}, 
+        {"studentName" : "lyanna", "reviewer" : "r3", "criterion" : "criterion2", "marks" : 33}, 
+        {"studentName" : "lyanna", "reviewer" : "r4","criterion" : "criterion2", "marks" : 55}, 
+        {"studentName" : "lyanna", "reviewer" : "r5", "criterion" : "criterion2", "marks" : 58}, 
+
+        {"studentName" : "lyanna", "reviewer" : "r1", "criterion" : "criterion3", "marks" : 90}, 
+        {"studentName" : "lyanna", "reviewer" : "r2","criterion" : "criterion3", "marks" : 98}, 
+        {"studentName" : "lyanna", "reviewer" : "r3", "criterion" : "criterion3", "marks" : 73}, 
+        {"studentName" : "lyanna", "reviewer" : "r4","criterion" : "criterion3", "marks" : 56}, 
+        {"studentName" : "lyanna", "reviewer" : "r5", "criterion" : "criterion3", "marks" : 45}, 
+       
+        {"studentName" : "lyanna", "reviewer" : "r1", "criterion" : "criterion4", "marks" : 80}, 
+        {"studentName" : "lyanna", "reviewer" : "r2","criterion" : "criterion4", "marks" : 78}, 
+        {"studentName" : "lyanna", "reviewer" : "r3", "criterion" : "criterion4", "marks" : 34}, 
+        {"studentName" : "lyanna", "reviewer" : "r4","criterion" : "criterion4", "marks" : 78}, 
+        {"studentName" : "lyanna", "reviewer" : "r5", "criterion" : "criterion4", "marks" : 45}, 
+
+        {"studentName" : "lyanna", "reviewer" : "r1", "criterion" : "criterion5", "marks" : 46}, 
+        {"studentName" : "lyanna", "reviewer" : "r2","criterion" : "criterion5", "marks" : 47}, 
+        {"studentName" : "lyanna", "reviewer" : "r3", "criterion" : "criterion5", "marks" : 89}, 
+        {"studentName" : "lyanna", "reviewer" : "r4","criterion" : "criterion5", "marks" : 76}, 
+        {"studentName" : "lyanna", "reviewer" : "r5", "criterion" : "criterion5", "marks" : 90}, 
+
+
+        {"studentName" : "jon", "reviewer" : "r1", "criterion" : "criterion1", "marks" : 35}, 
+        {"studentName" : "jon", "reviewer" : "r2","criterion" : "criterion1", "marks" : 67}, 
+        {"studentName" : "jon", "reviewer" : "r3", "criterion" : "criterion1", "marks" : 43}, 
+        {"studentName" : "jon", "reviewer" : "r4","criterion" : "criterion1", "marks" : 78}, 
+        {"studentName" : "jon", "reviewer" : "r5", "criterion" : "criterion1", "marks" : 99}, 
+
+        {"studentName" : "jon", "reviewer" : "r1", "criterion" : "criterion2", "marks" : 89}, 
+        {"studentName" : "jon", "reviewer" : "r2","criterion" : "criterion2", "marks" : 22}, 
+        {"studentName" : "jon", "reviewer" : "r3", "criterion" : "criterion2", "marks" : 33}, 
+        {"studentName" : "jon", "reviewer" : "r4","criterion" : "criterion2", "marks" : 55}, 
+        {"studentName" : "jon", "reviewer" : "r5", "criterion" : "criterion2", "marks" : 58}, 
+
+        {"studentName" : "jon", "reviewer" : "r1", "criterion" : "criterion3", "marks" : 90}, 
+        {"studentName" : "jon", "reviewer" : "r2","criterion" : "criterion3", "marks" : 98}, 
+        {"studentName" : "jon", "reviewer" : "r3", "criterion" : "criterion3", "marks" : 73}, 
+        {"studentName" : "jon", "reviewer" : "r4","criterion" : "criterion3", "marks" : 56}, 
+        {"studentName" : "jon", "reviewer" : "r5", "criterion" : "criterion3", "marks" : 45}, 
+       
+        {"studentName" : "jon", "reviewer" : "r1", "criterion" : "criterion4", "marks" : 80}, 
+        {"studentName" : "jon", "reviewer" : "r2","criterion" : "criterion4", "marks" : 78}, 
+        {"studentName" : "jon", "reviewer" : "r3", "criterion" : "criterion4", "marks" : 34}, 
+        {"studentName" : "jon", "reviewer" : "r4","criterion" : "criterion4", "marks" : 78}, 
+        {"studentName" : "jon", "reviewer" : "r5", "criterion" : "criterion4", "marks" : 45}, 
+
+        {"studentName" : "jon", "reviewer" : "r1", "criterion" : "criterion5", "marks" : 46}, 
+        {"studentName" : "jon", "reviewer" : "r2","criterion" : "criterion5", "marks" : 47}, 
+        {"studentName" : "jon", "reviewer" : "r3", "criterion" : "criterion5", "marks" : 89}, 
+        {"studentName" : "jon", "reviewer" : "r4","criterion" : "criterion5", "marks" : 76}, 
+        {"studentName" : "jon", "reviewer" : "r5", "criterion" : "criterion5", "marks" : 90}, 
+
+
+        {"studentName" : "psinaik", "reviewer" : "r1", "criterion" : "criterion1", "marks" : 78}, 
+        {"studentName" : "psinaik", "reviewer" : "r2", "criterion" : "criterion1", "marks" : 56}, 
+        {"studentName" : "psinaik", "reviewer" : "r3", "criterion" : "criterion1", "marks" : 34}, 
+        {"studentName" : "psinaik", "reviewer" : "r4", "criterion" : "criterion1", "marks" : 90}, 
+        {"studentName" : "psinaik", "reviewer" : "r5", "criterion" : "criterion1", "marks" : 66}, 
+        
+        {"studentName" : "psinaik", "reviewer" : "r1", "criterion" : "criterion2", "marks" : 78}, 
+        {"studentName" : "psinaik", "reviewer" : "r2", "criterion" : "criterion2", "marks" : 67}, 
+        {"studentName" : "psinaik", "reviewer" : "r3", "criterion" : "criterion2", "marks" : 73}, 
+        {"studentName" : "psinaik", "reviewer" : "r4", "criterion" : "criterion2", "marks" : 85}, 
+        {"studentName" : "psinaik", "reviewer" : "r5", "criterion" : "criterion2", "marks" : 43}, 
+
+        {"studentName" : "psinaik", "reviewer" : "r1", "criterion" : "criterion3", "marks" : 78}, 
+        {"studentName" : "psinaik", "reviewer" : "r2", "criterion" : "criterion3", "marks" : 90}, 
+        {"studentName" : "psinaik", "reviewer" : "r3", "criterion" : "criterion3", "marks" : 93}, 
+        {"studentName" : "psinaik", "reviewer" : "r4", "criterion" : "criterion3", "marks" : 73}, 
+        {"studentName" : "psinaik", "reviewer" : "r5", "criterion" : "criterion3", "marks" : 23}, 
+       
+        {"studentName" : "psinaik", "reviewer" : "r1", "criterion" : "criterion4", "marks" : 78}, 
+        {"studentName" : "psinaik", "reviewer" : "r2", "criterion" : "criterion4", "marks" : 45}, 
+        {"studentName" : "psinaik", "reviewer" : "r3", "criterion" : "criterion4", "marks" : 33}, 
+        {"studentName" : "psinaik", "reviewer" : "r4", "criterion" : "criterion4", "marks" : 88}, 
+        {"studentName" : "psinaik", "reviewer" : "r5", "criterion" : "criterion4", "marks" : 100}, 
+
+        {"studentName" : "psinaik", "reviewer" : "r1", "criterion" : "criterion5", "marks" : 78}, 
+        {"studentName" : "psinaik", "reviewer" : "r2","criterion" : "criterion5", "marks" : 67}, 
+        {"studentName" : "psinaik", "reviewer" : "r3", "criterion" : "criterion5", "marks" : 89}, 
+        {"studentName" : "psinaik", "reviewer" : "r4","criterion" : "criterion5", "marks" : 56}, 
+        {"studentName" : "psinaik", "reviewer" : "r5", "criterion" : "criterion5", "marks" : 80}, 
+
+
+        {"studentName" : "ned", "reviewer" : "r1", "criterion" : "criterion1", "marks" : 67}, 
+        {"studentName" : "ned", "reviewer" : "r2","criterion" : "criterion1", "marks" : 44}, 
+        {"studentName" : "ned", "reviewer" : "r3", "criterion" : "criterion1", "marks" : 67}, 
+        {"studentName" : "ned", "reviewer" : "r4","criterion" : "criterion1", "marks" : 43}, 
+        {"studentName" : "ned", "reviewer" : "r5", "criterion" : "criterion1", "marks" : 33}, 
+        
+        {"studentName" : "ned", "reviewer" : "r1", "criterion" : "criterion2", "marks" : 80}, 
+        {"studentName" : "ned", "reviewer" : "r2","criterion" : "criterion2", "marks" : 10}, 
+        {"studentName" : "ned", "reviewer" : "r3", "criterion" : "criterion2", "marks" : 40}, 
+        {"studentName" : "ned", "reviewer" : "r4","criterion" : "criterion2", "marks" : 40}, 
+        {"studentName" : "ned", "reviewer" : "r5", "criterion" : "criterion2", "marks" : 100}, 
+
+        {"studentName" : "ned", "reviewer" : "r1", "criterion" : "criterion3", "marks" : 53}, 
+        {"studentName" : "ned", "reviewer" : "r2","criterion" : "criterion3", "marks" : 67}, 
+        {"studentName" : "ned", "reviewer" : "r3", "criterion" : "criterion3", "marks" : 83}, 
+        {"studentName" : "ned", "reviewer" : "r4","criterion" : "criterion3", "marks" : 43}, 
+        {"studentName" : "ned", "reviewer" : "r5", "criterion" : "criterion3", "marks" : 33}, 
+       
+        {"studentName" : "ned", "reviewer" : "r1", "criterion" : "criterion4", "marks" : 73}, 
+        {"studentName" : "ned", "reviewer" : "r2","criterion" : "criterion4", "marks" : 56}, 
+        {"studentName" : "ned", "reviewer" : "r3", "criterion" : "criterion4", "marks" : 83}, 
+        {"studentName" : "ned", "reviewer" : "r4","criterion" : "criterion4", "marks" : 90}, 
+        {"studentName" : "ned", "reviewer" : "r5", "criterion" : "criterion4", "marks" : 73}, 
+
+        {"studentName" : "ned", "reviewer" : "r1", "criterion" : "criterion5", "marks" : 53}, 
+        {"studentName" : "ned", "reviewer" : "r2","criterion" : "criterion5", "marks" : 49}, 
+        {"studentName" : "ned", "reviewer" : "r3", "criterion" : "criterion5", "marks" : 93}, 
+        {"studentName" : "ned", "reviewer" : "r4","criterion" : "criterion5", "marks" : 56}, 
+        {"studentName" : "ned", "reviewer" : "r5", "criterion" : "criterion5", "marks" : 73}, 
+
+       
+        {"studentName" : "sansa", "reviewer" : "r1", "criterion" : "criterion1", "marks" : 63}, 
+        {"studentName" : "sansa", "reviewer" : "r2","criterion" : "criterion1", "marks" : 56}, 
+        {"studentName" : "sansa", "reviewer" : "r3", "criterion" : "criterion1", "marks" : 73}, 
+        {"studentName" : "sansa", "reviewer" : "r4","criterion" : "criterion1", "marks" : 89}, 
+        {"studentName" : "sansa", "reviewer" : "r5", "criterion" : "criterion1", "marks" : 13}, 
+        
+        {"studentName" : "sansa", "reviewer" : "r1", "criterion" : "criterion2", "marks" : 53}, 
+        {"studentName" : "sansa", "reviewer" : "r2","criterion" : "criterion2", "marks" : 66}, 
+        {"studentName" : "sansa", "reviewer" : "r3", "criterion" : "criterion2", "marks" : 77}, 
+        {"studentName" : "sansa", "reviewer" : "r4","criterion" : "criterion2", "marks" : 99}, 
+        {"studentName" : "sansa", "reviewer" : "r5", "criterion" : "criterion2", "marks" : 53}, 
+
+        {"studentName" : "sansa", "reviewer" : "r1", "criterion" : "criterion3", "marks" : 100}, 
+        {"studentName" : "sansa", "reviewer" : "r2","criterion" : "criterion3", "marks" : 34}, 
+        {"studentName" : "sansa", "reviewer" : "r3", "criterion" : "criterion3", "marks" : 12}, 
+        {"studentName" : "sansa", "reviewer" : "r4","criterion" : "criterion3", "marks" : 10}, 
+        {"studentName" : "sansa", "reviewer" : "r5", "criterion" : "criterion3", "marks" : 24}, 
+       
+        {"studentName" : "sansa", "reviewer" : "r1", "criterion" : "criterion4", "marks" : 90}, 
+        {"studentName" : "sansa", "reviewer" : "r2","criterion" : "criterion4", "marks" : 33}, 
+        {"studentName" : "sansa", "reviewer" : "r3", "criterion" : "criterion4", "marks" : 76}, 
+        {"studentName" : "sansa", "reviewer" : "r4","criterion" : "criterion4", "marks" : 89}, 
+        {"studentName" : "sansa", "reviewer" : "r5", "criterion" : "criterion4", "marks" : 90}, 
+
+        {"studentName" : "sansa", "reviewer" : "r1", "criterion" : "criterion5", "marks" : 44}, 
+        {"studentName" : "sansa", "reviewer" : "r2","criterion" : "criterion5", "marks" : 43}, 
+        {"studentName" : "sansa", "reviewer" : "r3", "criterion" : "criterion5", "marks" : 63}, 
+        {"studentName" : "sansa", "reviewer" : "r4","criterion" : "criterion5", "marks" : 43}, 
+        {"studentName" : "sansa", "reviewer" : "r5", "criterion" : "criterion5", "marks" : 63}, 
+
+         {"studentName" : "bran", "reviewer" : "r1", "criterion" : "criterion1", "marks" : 63}, 
+        {"studentName" : "bran", "reviewer" : "r2","criterion" : "criterion1", "marks" : 56}, 
+        {"studentName" : "bran", "reviewer" : "r3", "criterion" : "criterion1", "marks" : 73}, 
+        {"studentName" : "bran", "reviewer" : "r4","criterion" : "criterion1", "marks" : 89}, 
+        {"studentName" : "bran", "reviewer" : "r5", "criterion" : "criterion1", "marks" : 13}, 
+        
+        {"studentName" : "bran", "reviewer" : "r1", "criterion" : "criterion2", "marks" : 53}, 
+        {"studentName" : "bran", "reviewer" : "r2","criterion" : "criterion2", "marks" : 66}, 
+        {"studentName" : "bran", "reviewer" : "r3", "criterion" : "criterion2", "marks" : 77}, 
+        {"studentName" : "bran", "reviewer" : "r4","criterion" : "criterion2", "marks" : 99}, 
+        {"studentName" : "bran", "reviewer" : "r5", "criterion" : "criterion2", "marks" : 53}, 
+
+        {"studentName" : "bran", "reviewer" : "r1", "criterion" : "criterion3", "marks" : 63}, 
+        {"studentName" : "bran", "reviewer" : "r2","criterion" : "criterion3", "marks" : 90}, 
+        {"studentName" : "bran", "reviewer" : "r3", "criterion" : "criterion3", "marks" : 93}, 
+        {"studentName" : "bran", "reviewer" : "r4","criterion" : "criterion3", "marks" : 100}, 
+        {"studentName" : "bran", "reviewer" : "r5", "criterion" : "criterion3", "marks" : 67}, 
+       
+        {"studentName" : "bran", "reviewer" : "r1", "criterion" : "criterion4", "marks" : 90}, 
+        {"studentName" : "bran", "reviewer" : "r2","criterion" : "criterion4", "marks" : 33}, 
+        {"studentName" : "bran", "reviewer" : "r3", "criterion" : "criterion4", "marks" : 76}, 
+        {"studentName" : "bran", "reviewer" : "r4","criterion" : "criterion4", "marks" : 89}, 
+        {"studentName" : "bran", "reviewer" : "r5", "criterion" : "criterion4", "marks" : 90}, 
+
+        {"studentName" : "bran", "reviewer" : "r1", "criterion" : "criterion5", "marks" : 44}, 
+        {"studentName" : "bran", "reviewer" : "r2","criterion" : "criterion5", "marks" : 43}, 
+        {"studentName" : "bran", "reviewer" : "r3", "criterion" : "criterion5", "marks" : 63}, 
+        {"studentName" : "bran", "reviewer" : "r4","criterion" : "criterion5", "marks" : 43}, 
+        {"studentName" : "bran", "reviewer" : "r5", "criterion" : "criterion5", "marks" : 63}
+      ];
+
+    studentData.forEach(function (d) {
+        d["varRange"] = Math.ceil(d["variance"]);
+    }, this);
+
+
+      // The main chart
+      var myChart = new dimple.chart(svg, studentData);
+      // The chart to show in a tooltip
+      var tipChart = null;
+      // The other popup shapes
+      var popup = null;
+
+      // Position the main chart
+      myChart.setBounds(60, 40, 500, 320);
+      
+      // Add the main chart axes
+      var x = myChart.addCategoryAxis("x", "criterion");
+      var y = myChart.addCategoryAxis("y", "studentName");
+      var z = myChart.addMeasureAxis("z", "avgMarks");
+
+      // Using color for student
+      // myChart.addCategoryAxis("x", "criterion");
+      // myChart.addCategoryAxis("z", "studentName");
+      // myChart.addMeasureAxis("y", "avgMarks");
+
+      // myChart.addMeasureAxis("color", "meanDeviation");
+      // var s = myChart.addSeries(["variance"], dimple.plot.bubble);
+      var s = myChart.addSeries(["varRange"], dimple.plot.bubble);
+      z.colors = ["#DA9694", "#FABF8F", "#C4D79B"];
+      s.colors = ["#DA9694", "#FABF8F", "#C4D79B"];
+      // var s = myChart.addSeries(null, dimple.plot.bubble);
+
+      // Order the x-axis by the total marks.. add this column
+      // x.addOrderRule("totalMarks");
+
+      // Min price will be green, middle price yellow and max red
+      // myChart.addColorAxis("varRange", ["green", "yellow", "red"]);
+
+      // Handle the hover event - overriding the default behaviour
+      s.addEventHandler("click", onClick);
+      // Handle the leave event - overriding the default behaviour
+      s.addEventHandler("mouseup", onMouseLeave);
+      myChart.addLegend(180, 1, 360, 20, "right");
+      myChart.draw();
+
+      // Event to handle mouse enter
+      function onClick(e) {
+        
+        // Get the properties of the selected shape
+        var cx = parseFloat(e.selectedShape.attr("cx")),
+            cy = parseFloat(e.selectedShape.attr("cy")),
+            r = parseFloat(e.selectedShape.attr("r")),
+            fill = e.selectedShape.attr("fill"),
+            stroke = e.selectedShape.attr("stroke");
+            
+        // Set the size and position of the popup
+        var width = 150,
+            height = 100,
+            x = (cx + r + width + 10 < svg.attr("width") ?
+                  cx + r + 10 :
+                  cx - r - width - 20);
+            y = (cy - height / 2 < 0 ?
+                  15 :
+                  cy - height / 2);
+                
+        // Fade the popup fill mixing the shape fill with 80% white
+        var popupFillColor = d3.rgb(
+                    d3.rgb(fill).r + 0.8 * (255 - d3.rgb(fill).r),
+                    d3.rgb(fill).g + 0.8 * (255 - d3.rgb(fill).g),
+                    d3.rgb(fill).b + 0.8 * (255 - d3.rgb(fill).b)
+                );
+        
+        // Create a group for the popup objects
+        popup = svg.append("g");
+        
+        // Add a rectangle surrounding the chart
+        popup
+          .append("rect")
+          .attr("x", x + 5)
+          .attr("y", y - 5)
+          .attr("width", width)
+          .attr("height", height)
+          .attr("rx", 5)
+          .attr("ry", 5)
+          .style("fill", popupFillColor)
+          .style("stroke", stroke)
+          .style("stroke-width", 2);
+        
+        // Add the series value text
+        popup
+          .append("text")
+          .attr("x", x + 10)
+          .attr("y", y + 10)
+          .text(e.yValue +  ', '+ e.xValue)
+          .style("font-family", "sans-serif")
+          .style("font-size", 6)
+          .style("fill", stroke);
+        
+        // Filter the data for the selected student and criterion
+        var hoverData = dimple.filterData(studentReviewerData, "criterion", e.xValue);
+        hoverData = dimple.filterData(hoverData, "studentName", e.yValue);
+        
+        // Create a new mini chart of Marks given by different Reviewers
+        tipChart = new dimple.chart(svg,  hoverData);
+        tipChart.setBounds(x + 10, y + 30, width - 10, height - 40);
+        tipChart.addCategoryAxis("x", "reviewer").hidden = false;
+        tipChart.addMeasureAxis("y", "marks").hidden = true;
+        
+        // Add a bar series, this can be changed to a line, area or bubble
+        // by changing the plot parameter accordingly.
+        var popUpSeries = tipChart.addSeries("SelectedSeries", dimple.plot.bar);
+        
+        // Set the gap to 80% - just a style preference
+        popUpSeries.barGap = 0.5;
+        
+        // Set the color to the stroke color of the selected node
+        tipChart.assignColor("SelectedSeries", stroke, stroke);
+        
+        // Draw the mini chart
+        tipChart.draw();
+      };
+
+        // Event to handle mouse exit
+      function onMouseLeave(e) {
+        // Remove the chart
+        if (tipChart !== null) {
+          tipChart._group.remove();
+        }
+        // Remove the popup
+        if (popup !== null) {
+          popup.remove();
+        }
+      };
+    </script>
+  </body>
+</html>

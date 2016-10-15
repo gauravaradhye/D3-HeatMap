@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://dimplejs.org/dist/dimple.v2.1.6.min.js"></script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+    // Add a simple SVG element to the body of this document
+      var svg = dimple.newSvg("body", 800, 600);
+
+      // Create a dataset for 5 students and 6 assignments/projects
+      var studentSubmissionData = [
+        {"studentId" : "s1", "assignment" : "assignment1", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s1", "assignment" : "assignment2", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s1", "assignment" : "assignment3", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s1", "assignment" : "assignment4", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s1", "assignment" : "assignment5", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s1", "assignment" : "assignment6", "daysBeforeDeadline" : 1}, 
+        
+        {"studentId" : "s2", "assignment" : "assignment1", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s2", "assignment" : "assignment2", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s2", "assignment" : "assignment3", "daysBeforeDeadline" : 3}, 
+        {"studentId" : "s2", "assignment" : "assignment4", "daysBeforeDeadline" : 4}, 
+        {"studentId" : "s2", "assignment" : "assignment5", "daysBeforeDeadline" : 6}, 
+        {"studentId" : "s2", "assignment" : "assignment6", "daysBeforeDeadline" : 1}, 
+         
+        {"studentId" : "s3", "assignment" : "assignment1", "daysBeforeDeadline" : 5}, 
+        {"studentId" : "s3", "assignment" : "assignment2", "daysBeforeDeadline" : 5}, 
+        {"studentId" : "s3", "assignment" : "assignment3", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s3", "assignment" : "assignment4", "daysBeforeDeadline" : 3}, 
+        {"studentId" : "s3", "assignment" : "assignment5", "daysBeforeDeadline" : 3}, 
+        {"studentId" : "s3", "assignment" : "assignment6", "daysBeforeDeadline" : 1}, 
+
+        {"studentId" : "s4", "assignment" : "assignment1", "daysBeforeDeadline" : 6}, 
+        {"studentId" : "s4", "assignment" : "assignment2", "daysBeforeDeadline" : 6}, 
+        {"studentId" : "s4", "assignment" : "assignment3", "daysBeforeDeadline" : 6}, 
+        {"studentId" : "s4", "assignment" : "assignment4", "daysBeforeDeadline" : 4}, 
+        {"studentId" : "s4", "assignment" : "assignment5", "daysBeforeDeadline" : 4}, 
+        {"studentId" : "s4", "assignment" : "assignment6", "daysBeforeDeadline" : 3}, 
+
+        {"studentId" : "s5", "assignment" : "assignment1", "daysBeforeDeadline" : 4}, 
+        {"studentId" : "s5", "assignment" : "assignment2", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s5", "assignment" : "assignment3", "daysBeforeDeadline" : 4}, 
+        {"studentId" : "s5", "assignment" : "assignment4", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s5", "assignment" : "assignment5", "daysBeforeDeadline" : 2}, 
+        {"studentId" : "s5", "assignment" : "assignment6", "daysBeforeDeadline" : 6}, 
+
+
+        {"studentId" : "s6", "assignment" : "assignment1", "daysBeforeDeadline" : 2}, 
+        {"studentId" : "s6", "assignment" : "assignment2", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s6", "assignment" : "assignment3", "daysBeforeDeadline" : 2}, 
+        {"studentId" : "s6", "assignment" : "assignment4", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s6", "assignment" : "assignment5", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s6", "assignment" : "assignment6", "daysBeforeDeadline" : 1}, 
+
+        {"studentId" : "s7", "assignment" : "assignment1", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s7", "assignment" : "assignment2", "daysBeforeDeadline" : 6}, 
+        {"studentId" : "s7", "assignment" : "assignment3", "daysBeforeDeadline" : 2}, 
+        {"studentId" : "s7", "assignment" : "assignment4", "daysBeforeDeadline" : 6}, 
+        {"studentId" : "s7", "assignment" : "assignment5", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s7", "assignment" : "assignment6", "daysBeforeDeadline" : 1}, 
+
+        {"studentId" : "s8", "assignment" : "assignment1", "daysBeforeDeadline" : 4}, 
+        {"studentId" : "s8", "assignment" : "assignment2", "daysBeforeDeadline" : 5}, 
+        {"studentId" : "s8", "assignment" : "assignment3", "daysBeforeDeadline" : 6}, 
+        {"studentId" : "s8", "assignment" : "assignment4", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s8", "assignment" : "assignment5", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s8", "assignment" : "assignment6", "daysBeforeDeadline" : 1}, 
+     
+        {"studentId" : "s9", "assignment" : "assignment1", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s9", "assignment" : "assignment2", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s9", "assignment" : "assignment3", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s9", "assignment" : "assignment4", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s9", "assignment" : "assignment5", "daysBeforeDeadline" : 6}, 
+        {"studentId" : "s9", "assignment" : "assignment6", "daysBeforeDeadline" : 4}, 
+       
+        {"studentId" : "s10", "assignment" : "assignment1", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s10", "assignment" : "assignment2", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s10", "assignment" : "assignment3", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s10", "assignment" : "assignment4", "daysBeforeDeadline" : 3}, 
+        {"studentId" : "s10", "assignment" : "assignment5", "daysBeforeDeadline" : 5}, 
+        {"studentId" : "s10", "assignment" : "assignment6", "daysBeforeDeadline" : 3}, 
+      
+        {"studentId" : "s11", "assignment" : "assignment1", "daysBeforeDeadline" : 5}, 
+        {"studentId" : "s11", "assignment" : "assignment2", "daysBeforeDeadline" : 4}, 
+        {"studentId" : "s11", "assignment" : "assignment3", "daysBeforeDeadline" : 1}, 
+        {"studentId" : "s11", "assignment" : "assignment4", "daysBeforeDeadline" : 6}, 
+        {"studentId" : "s11", "assignment" : "assignment5", "daysBeforeDeadline" : 4}, 
+        {"studentId" : "s11", "assignment" : "assignment6", "daysBeforeDeadline" : 2}
+
+
+        // Create Separate Date and Time, this allows us to draw them
+        // on separate axes.  Despite the time axis only displaying
+        // the time portion, the whole date is used so they need to
+        // have the same date allocated
+        var counts[] ;
+        studentSubmissionData.forEach(function (s) {
+            counts[daysBeforeDeadline] =  counts[daysBeforeDeadline] + s["daysBeforeDeadline"] ;
+        }, this);
+
+        // Create the chart as usual
+        var myChart = new dimple.chart(svg, studentSubmissionData);
+        myChart.setBounds(70, 40, 490, 320)
+        
+        var x = myChart.addTimeAxis("x", "daysBeforeDeadline");
+        var y = myChart.addTimeAxis("y", "assignment");
+
+        // Size the bubbles by volume
+        var z = myChart.addMeasureAxis("z", "Value");
+        
+        // Setting min and max dates requires them to be set
+        // as actual javascript date objects
+        x.overrideMin = new Date("2010-06-20");
+        x.overrideMax = new Date("2011-01-02");
+        y.overrideMin = new Date("01/01/2000 9:00 am");
+        y.overrideMax = new Date("01/01/2000 6:00 pm");
+
+        // Show a label for every 4 weeks.
+        x.timePeriod = d3.time.weeks;
+        x.timeInterval = 4;
+
+        // Control bubble sizes by setting the max and min values    
+        z.overrideMin = 900;
+        z.overrideMax = 3000;
+
+        // Add the bubble series for shift values first so that it is
+        // drawn behind the lines
+        myChart.addSeries("Shift", dimple.plot.bubble);
+
+        // Add the line series on top of the bubbles.  The bubbles
+        // and line points will naturally fall in the same places
+        var s = myChart.addSeries("Shift", dimple.plot.line);
+
+        // Add line markers to the line because it looks nice
+        s.lineMarkers = true;
+
+        // Show a legend
+        myChart.addLegend(180, 10, 360, 20, "right");
+
+        // Draw everything
+        myChart.draw();
+
+
+    </script>
+  </body>
+</html>
