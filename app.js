@@ -182,7 +182,7 @@ function loadChart(data) {
                 return maximum_color;
             }
 
-            console.log("Maximu color: " + maximum_color);
+            console.log("Maximum color: " + maximum_color);
 
             for (var i = 0; i < uniqueValues.length; i++) {
                 console.log(value + " Compared with " + uniqueValues[i]);
