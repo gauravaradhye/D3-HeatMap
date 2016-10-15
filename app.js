@@ -12,17 +12,6 @@ var margin = {
     height = $("#chart").parent().height() - margin.top - margin.bottom,
     gridSize = Math.floor(width / 12),
     legendElementWidth = gridSize * 1.25,
-    colors = [
-        "#C0392B",
-        "#E74C3C",
-        "#F39C12",
-        "#F4D03F"
-        // "#ABEBC6",
-        // "#58D68D",
-        // "#239B56",
-        // "#0E6655",
-        // "#154360"
-    ],
     h_labels = [],
     v_labels = [],
     default_value = null,
@@ -167,7 +156,7 @@ function loadChart(data) {
             return (d.x) * gridSize;
         }).attr("y", function(d) {
             return (d.y) * gridSize;
-        }).attr("rx", 4).attr("ry", 4).attr("class", "hour bordered").attr("width", gridSize).attr("height", gridSize).style("fill", colors[0]).on("mouseover", function(d) {
+        }).attr("rx", 4).attr("ry", 4).attr("class", "hour bordered").attr("width", gridSize).attr("height", gridSize).on("mouseover", function(d) {
             div.transition().duration(200).style("opacity", .65);
             div.html(d.text + "<br/>").style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
         }).on("mouseout", function(d) {
