@@ -57,7 +57,6 @@ for (var i = 0; i < intensity_map_values.length; i++) {
 }
 
 $.getJSON("data.json", function(data) {
-    //console.log(data);
     h_labels = data.h_labels;
     v_labels = data.v_labels;
     color_ranges = data.color_scheme.ranges;
@@ -81,14 +80,11 @@ $.getJSON("data.json", function(data) {
             }
         }
     }
-    console.log(range_hashmap);
     loadChart(data);
 });
 
 function getRangeWhereMinimumIs(value, color_ranges) {
-    console.log(color_ranges);
     for (var i = 0; i < color_ranges.length; i++) {
-        console.log(color_ranges[i].minimum);
         if (color_ranges[i].minimum === value) {
             return color_ranges[i].color;
         }
@@ -100,7 +96,6 @@ function getRangeWhereMinimumIs(value, color_ranges) {
 function getRangeWhereMaximumIs(value, color_ranges) {
     var range = null;
     for (var i = 0; i < color_ranges.length; i++) {
-        console.log(color_ranges[i].maximum);
         if (color_ranges[i].maximum === value) {
             return color_ranges[i].color;
         }
@@ -110,10 +105,8 @@ function getRangeWhereMaximumIs(value, color_ranges) {
 }
 
 function get_range_values(ranges) {
-    //console.log(ranges);
     values = []
     for (var i = 0; i < ranges.length; i++) {
-        //console.log(ranges[i])
         values.push(ranges[i].minimum)
         values.push(ranges[i].maximum)
     }
@@ -176,8 +169,6 @@ function loadChart(data) {
             }
         }
 
-        console.log(data);
-
         var cards = svg.selectAll(".assignment").data(data);
 
         cards.append("title");
@@ -213,7 +204,6 @@ function loadChart(data) {
             }
 
             for (var i = 0; i < uniqueValues.length; i++) {
-                console.log(value + " Compared with " + uniqueValues[i]);
                 if (value < uniqueValues[i]) {
                     if (i == 0) {
                         minimum = minimum_value;
@@ -228,12 +218,8 @@ function loadChart(data) {
         }
 
         function getColorWithIntensity(color, value, minimum_in_range, maximum_in_range) {
-            console.log(minimum_in_range, maximum_in_range);
             var intensity_percentage = get_brightening_intensity_percentage(value, minimum_in_range, maximum_in_range);
-            //intensity_percentage = Math.abs(100 * Math.abs(maximum_in_range - value) / (maximum_in_range - minimum_in_range));
-            console.log(intensity_percentage + " %");
             var final_color = getAdjustedColor(color, intensity_percentage);
-            console.log(final_color);
             return final_color;
         }
 
@@ -251,23 +237,23 @@ function loadChart(data) {
             return tinycolor(color).lighten(intensity_percentage).toString();
         }
 
-        // var legend = svg.selectAll(".legend").data(colorScale.domain());
-        //
-        // legend.enter().append("g").attr("class", "legend");
-        //
-        // legend.append("rect").attr("x", function(d, i) {
-        //     return legendElementWidth * i;
-        // }).attr("y", height).attr("width", legendElementWidth).attr("height", gridSize / 2).style("fill", function(d, i) {
-        //     return colors[i];
-        // });
-        //
-        // legend.append("text").attr("class", "mono").text(function(d) {
-        //     return "≥ " + Math.round(d);
-        // }).attr("x", function(d, i) {
-        //     return legendElementWidth * i;
-        // }).attr("y", height + gridSize);
-        //
-        // legend.exit().remove();
+        var legend = svg.selectAll(".legend").data(colorScale.domain());
+
+        legend.enter().append("g").attr("class", "legend");
+
+        legend.append("rect").attr("x", function(d, i) {
+            return legendElementWidth * i;
+        }).attr("y", height).attr("width", legendElementWidth).attr("height", gridSize / 2).style("fill", function(d, i) {
+            return colors[i];
+        });
+
+        legend.append("text").attr("class", "mono").text(function(d) {
+            return "≥ " + Math.round(d);
+        }).attr("x", function(d, i) {
+            return legendElementWidth * i;
+        }).attr("y", height + gridSize);
+
+        legend.exit().remove();
     };
     heatmapChart();
 }
