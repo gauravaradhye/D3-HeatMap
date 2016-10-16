@@ -6,7 +6,7 @@ var tinycolor = require("tinycolor2");
 var margin = {
         top: 100,
         right: 0,
-        bottom: 100,
+        bottom: 0,
         left: 140
     },
     width = $("#chart").parent().width() - margin.left - margin.right,
@@ -216,6 +216,22 @@ function loadChart(data) {
             return range_hashmap[uniqueValues[uniqueValues.length - 1]].color;
         }
 
+        function getRangeColor(value) {
+            if (value === default_value) {
+                return default_color;
+            } else if (value === minimum_value) {
+                return minimum_color;
+            } else if (value === maximum_value) {
+                return maximum_color;
+            }
+
+            for (var i = 0; i < uniqueValues.length; i++) {
+                if (value < uniqueValues[i]) {
+                    return range_hashmap[uniqueValues[i]].color;
+                }
+            }
+        }
+
         function getColorWithIntensity(color, value, minimum_in_range, maximum_in_range) {
             var intensity_percentage = get_brightening_intensity_percentage(value, minimum_in_range, maximum_in_range);
             var final_color = getAdjustedColor(color, intensity_percentage);
@@ -236,21 +252,21 @@ function loadChart(data) {
             return tinycolor(color).lighten(intensity_percentage).toString();
         }
 
-        var legend = svg.selectAll(".legend").data(colorScale.domain());
+        var legend = svg.selectAll(".legend").data(uniqueValues);
 
         legend.enter().append("g").attr("class", "legend");
 
         legend.append("rect").attr("x", function(d, i) {
             return legendElementWidth * i;
-        }).attr("y", height).attr("width", legendElementWidth).attr("height", gridSize / 2).style("fill", function(d, i) {
-            return colors[i];
+        }).attr("y", gridSize * (v_labels.length + 1)).attr("width", legendElementWidth).attr("height", gridSize / 2).style("fill", function(d, i) {
+            return getRangeColor(d);
         });
 
         legend.append("text").attr("class", "mono").text(function(d) {
             return "≥ " + Math.round(d);
         }).attr("x", function(d, i) {
             return legendElementWidth * i;
-        }).attr("y", height + gridSize);
+        }).attr("y", gridSize * (v_labels.length + 1) + gridSize / 2);
 
         legend.exit().remove();
     };
