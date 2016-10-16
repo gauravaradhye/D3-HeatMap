@@ -1,6 +1,7 @@
 var $ = require("jquery")
 var d3 = require("d3")
 var HashMap = require("hashmap")
+var tinycolor = require("tinycolor2");
 
 var margin = {
         top: 100,
@@ -25,6 +26,34 @@ var margin = {
     minimum_color = null,
     maximum_value = null,
     maximum_color = null;
+var intensity_hashmap = new HashMap();
+intensity_map_values = [
+    [100, "FF"],
+    [95, "F2"],
+    [90, "E6"],
+    [85, "D9"],
+    [80, "CC"],
+    [75, "BF"],
+    [70, "B3"],
+    [65, "A6"],
+    [60, "99"],
+    [55, "8C"],
+    [50, "80"],
+    [45, "73"],
+    [40, "66"],
+    [35, "59"],
+    [30, "4D"],
+    [25, "40"],
+    [20, "33"],
+    [15, "26"],
+    [10, "1A"],
+    [5, "0D"],
+    [0, "00"]
+];
+
+for (var i = 0; i < intensity_map_values.length; i++) {
+    intensity_hashmap.set(intensity_map_values[i][0], intensity_map_values[i][1]);
+}
 
 $.getJSON("data.json", function(data) {
     //console.log(data);
@@ -182,16 +211,43 @@ function loadChart(data) {
                 return maximum_color;
             }
 
-            console.log("Maximum color: " + maximum_color);
-
             for (var i = 0; i < uniqueValues.length; i++) {
                 console.log(value + " Compared with " + uniqueValues[i]);
                 if (value < uniqueValues[i]) {
-                    return range_hashmap[uniqueValues[i]].color;
+                    if (i == 0) {
+                        minimum = minimum_value;
+                    } else {
+                        minimum = uniqueValues[i - 1];
+                    }
+                    return getColorWithIntensity(range_hashmap[uniqueValues[i]].color, value, minimum, uniqueValues[i]);
                 }
             }
 
             return range_hashmap[uniqueValues[uniqueValues.length - 1]].color;
+        }
+
+        function getColorWithIntensity(color, value, minimum_in_range, maximum_in_range) {
+            console.log(minimum_in_range, maximum_in_range);
+            var intensity_percentage = get_brightening_intensity_percentage(value, minimum_in_range, maximum_in_range);
+            //intensity_percentage = Math.abs(100 * Math.abs(maximum_in_range - value) / (maximum_in_range - minimum_in_range));
+            console.log(intensity_percentage + " %");
+            var final_color = getAdjustedColor(color, intensity_percentage);
+            console.log(final_color);
+            return final_color;
+        }
+
+        function get_brightening_intensity_percentage(value, min, max) {
+            if (value < 0) {
+                var diff = value - min;
+            } else {
+                var diff = max - value;
+            }
+
+            return (diff * 100 / Math.abs(max - min)) / 5
+        }
+
+        function getAdjustedColor(color, intensity_percentage) {
+            return tinycolor(color).lighten(intensity_percentage).toString();
         }
 
         // var legend = svg.selectAll(".legend").data(colorScale.domain());
