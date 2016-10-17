@@ -224,14 +224,17 @@ function loadChart(data) {
             return tinycolor(color).lighten(intensity_percentage).toString();
         }
 
-        var all_values = uniqueValues.unshift(minimum_value);
-        var legend = svg.selectAll(".legend").data(uniqueValues);
+        var legend_values = uniqueValues.slice();
+        legend_values.unshift(minimum_value);
+        legend_values.pop();
+        console.log(legend_values);
+        var legend = svg.selectAll(".legend").data(legend_values);
 
         legend.enter().append("g").attr("class", "legend");
 
         legend.append("rect").attr("x", function(d, i) {
             return legendElementWidth * i;
-        }).attr("y", gridSize * (v_labels.length + 1)).attr("width", legendElementWidth).attr("height", gridSize / 2).style("fill", function(d, i) {
+        }).attr("y", gridSize * (v_labels.length + 0.5)).attr("width", legendElementWidth).attr("height", gridSize / 2).style("fill", function(d, i) {
             return getRangeColor(d);
         });
 
@@ -239,7 +242,7 @@ function loadChart(data) {
             return "≥ " + d;
         }).attr("x", function(d, i) {
             return legendElementWidth * i;
-        }).attr("y", gridSize * (v_labels.length + 1) + 1.5 * gridSize / 2);
+        }).attr("y", gridSize * (v_labels.length + 1) + gridSize / 2.5);
 
         legend.exit().remove();
     };
