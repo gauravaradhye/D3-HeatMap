@@ -26,34 +26,6 @@ var margin = {
     minimum_color = null,
     maximum_value = null,
     maximum_color = null;
-var intensity_hashmap = new HashMap();
-intensity_map_values = [
-    [100, "FF"],
-    [95, "F2"],
-    [90, "E6"],
-    [85, "D9"],
-    [80, "CC"],
-    [75, "BF"],
-    [70, "B3"],
-    [65, "A6"],
-    [60, "99"],
-    [55, "8C"],
-    [50, "80"],
-    [45, "73"],
-    [40, "66"],
-    [35, "59"],
-    [30, "4D"],
-    [25, "40"],
-    [20, "33"],
-    [15, "26"],
-    [10, "1A"],
-    [5, "0D"],
-    [0, "00"]
-];
-
-for (var i = 0; i < intensity_map_values.length; i++) {
-    intensity_hashmap.set(intensity_map_values[i][0], intensity_map_values[i][1]);
-}
 
 $.getJSON("data.json", function(data) {
     h_labels = data.h_labels;
@@ -252,6 +224,7 @@ function loadChart(data) {
             return tinycolor(color).lighten(intensity_percentage).toString();
         }
 
+        var all_values = uniqueValues.unshift(minimum_value);
         var legend = svg.selectAll(".legend").data(uniqueValues);
 
         legend.enter().append("g").attr("class", "legend");
@@ -263,10 +236,10 @@ function loadChart(data) {
         });
 
         legend.append("text").attr("class", "mono").text(function(d) {
-            return "≥ " + Math.round(d);
+            return "≥ " + d;
         }).attr("x", function(d, i) {
             return legendElementWidth * i;
-        }).attr("y", gridSize * (v_labels.length + 1) + gridSize / 2);
+        }).attr("y", gridSize * (v_labels.length + 1) + 1.5 * gridSize / 2);
 
         legend.exit().remove();
     };
