@@ -5,10 +5,10 @@ var HashMap = require("hashmap")
 var tinycolor = require("tinycolor2");
 
 var margin = {
-        top: 100,
+        top: $("#chart").parent().height() / 7,
         right: 0,
         bottom: 0,
-        left: 140
+        left: $("#chart").parent().width() / 6.5
     },
     width = $("#chart").parent().width() - margin.left - margin.right,
     height = $("#chart").parent().height() - margin.top - margin.bottom,
@@ -240,12 +240,21 @@ function loadChart(data) {
         });
 
         legend.append("text").attr("class", "mono").text(function(d) {
-            return "≥ " + d;
+            return "≥" + d;
         }).attr("x", function(d, i) {
             return legendElementWidth * i;
         }).attr("y", gridSize * (v_labels.length + 1) + gridSize / 2.5);
 
         legend.exit().remove();
+
+        changeTextSize();
+
+        function changeTextSize() {
+            var cols = document.getElementsByClassName('mono');
+            for (i = 0; i < cols.length; i++) {
+                cols[i].style.fontSize = $("#chart").parent().width() / 50 + "px";
+            }
+        }
     };
     heatmapChart();
 }
