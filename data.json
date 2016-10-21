@@ -3,6 +3,7 @@
     "h_labels": ["Submission 1", "Submission 2", "Submission 3", "Submission 4", "Submission 5", "Submission 6", "Submission 7"],
     "font-size": 12,
     "font-face": "Arial",
+    "showTextInsideBoxes": true,
     "color_scheme": {
         "default_color": "#F4D03F",
         "default_value": 0,
@@ -159,7 +160,7 @@
             "text": "sample text 4"
         }, {
             "value": 0,
-            "text": "sample text 4"
+            "text": "sample text 5"
         }]
     ]
 }

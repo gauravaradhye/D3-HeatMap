@@ -154,7 +154,6 @@ function loadChart(data) {
         }).on("mouseout", function(d) {
             div.transition().duration(500).style("opacity", 0);
         });
-
         cards.transition().duration(1000).style("fill", function(d) {
             return get_fill_color(d.value);
         });
@@ -162,6 +161,20 @@ function loadChart(data) {
         cards.select("title").text(function(d) {
             return d.value;
         });
+
+        cards.exit().remove();
+
+        cards.enter().append("text").attr("x", function(d) {
+                return ((d.x) * gridSize);
+            })
+            .attr("y", function(d) {
+                return (d.y) * gridSize;
+            })
+            .attr("dx", gridSize * 0.1)
+            .attr("dy", gridSize / 2)
+            .text(function(d) {
+                return d.text;
+            });
 
         cards.exit().remove();
 
