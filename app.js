@@ -12,7 +12,7 @@ var margin = {
     width = $("#chart").parent().width() - margin.left - margin.right,
     height = $("#chart").parent().height() - margin.top - margin.bottom,
     gridSize = Math.floor(width / 12),
-    legendElementWidth = gridSize * 1.25,
+    total_legendWidth = 0,
     h_labels = [],
     v_labels = [],
     default_value = null,
@@ -25,11 +25,13 @@ var margin = {
     minimum_value = null,
     minimum_color = null,
     maximum_value = null,
-    maximum_color = null;
+    maximum_color = null,
+    legendWidthPercentage = 0.8;
 
 $.getJSON("data.json", function(data) {
     h_labels = data.h_labels;
     v_labels = data.v_labels;
+    total_legendWidth = gridSize * h_labels.length * 0.8;
     color_ranges = data.color_scheme.ranges;
     uniqueValues = get_range_values(data.color_scheme.ranges);
 
@@ -222,6 +224,7 @@ function loadChart(data) {
         }
 
         var legend_values = uniqueValues.slice();
+        var legendElementWidth = total_legendWidth / legend_values.length;
         legend_values.unshift(minimum_value);
         legend_values.pop();
         console.log(legend_values);
@@ -230,7 +233,7 @@ function loadChart(data) {
         legend.enter().append("g").attr("class", "legend");
 
         legend.append("rect").attr("x", function(d, i) {
-            return legendElementWidth * i;
+            return legendElementWidth * i + (1 - legendWidthPercentage) * total_legendWidth / 2;
         }).attr("y", gridSize * (v_labels.length + 0.5)).attr("width", legendElementWidth).attr("height", gridSize / 2).style("fill", function(d, i) {
             return getRangeColor(d);
         });
@@ -238,7 +241,7 @@ function loadChart(data) {
         legend.append("text").attr("class", "mono").text(function(d) {
             return "≥" + d;
         }).attr("x", function(d, i) {
-            return legendElementWidth * i;
+            return legendElementWidth * i + (1 - legendWidthPercentage) * total_legendWidth / 2;
         }).attr("y", gridSize * (v_labels.length + 1) + gridSize / 2.5);
 
         legend.exit().remove();
