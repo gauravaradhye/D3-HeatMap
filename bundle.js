@@ -128,7 +128,7 @@ function loadChart(data) {
         raw_data = data.content;
         data = [];
         for (var i = 0; i < raw_data.length; i++) {
-            for (var j = 0; j < raw_data.length; j++) {
+            for (var j = 0; j < raw_data[i].length; j++) {
                 data.push({
                     "x": j,
                     "y": i,

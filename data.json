@@ -1,5 +1,5 @@
 {
-    "v_labels": ["Reviewer 1", "Reviewer 2", "Reviewer 3", "Reviewer 4", "Reviewer 5", "Reviewer 6", "Reviewer 7"],
+    "v_labels": ["Reviewer 1", "Reviewer 2", "Reviewer 3", "Reviewer 4", "Reviewer 5", "Reviewer 6"],
     "h_labels": ["Submission 1", "Submission 2", "Submission 3", "Submission 4", "Submission 5", "Submission 6", "Submission 7"],
     "font-size": 12,
     "font-face": "Arial",
@@ -141,28 +141,6 @@
         }],
         [{
             "value": -0.53,
-            "text": "sample text 1"
-        }, {
-            "value": 0.5,
-            "text": "sample text 2"
-        }, {
-            "value": 1,
-            "text": "sample text 3"
-        }, {
-            "value": -1,
-            "text": "sample text 4"
-        }, {
-            "value": -0.25,
-            "text": "sample text 4"
-        }, {
-            "value": -0.75,
-            "text": "sample text 4"
-        }, {
-            "value": 0,
-            "text": "sample text 4"
-        }],
-        [{
-            "value": 0,
             "text": "sample text 1"
         }, {
             "value": 0.5,
