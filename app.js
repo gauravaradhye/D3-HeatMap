@@ -100,7 +100,7 @@ function loadChart(data) {
     }).attr("x", 0).attr("y", function(d, i) {
         return i * gridSize;
     }).style("text-anchor", "end").style("margin-right", "5px").attr("transform", "translate(-6," + gridSize / 1.5 + ")").attr("class", function(d, i) {
-        return ((i >= 0 && i <= 7) ?
+        return ((i >= 0 && i <= h_labels.length) ?
             "courseLabel mono axis axis-workweek" :
             "courseLabel mono axis");
     });
@@ -111,16 +111,13 @@ function loadChart(data) {
         0, gridSize * h_labels.length
     ]);
 
+    var x_ticks = []
+    for (var i = 0; i < h_labels.length; i++) {
+        x_ticks.push(gridSize * i);
+    }
+
     var xAxis = d3.svg.axis(x)
-        .tickValues([
-            gridSize * 0,
-            gridSize * 1,
-            gridSize * 2,
-            gridSize * 3,
-            gridSize * 4,
-            gridSize * 5,
-            gridSize * 6
-        ]).tickFormat(function(d, i) {
+        .tickValues(x_ticks).tickFormat(function(d, i) {
             return h_labels[i];
         });
 
