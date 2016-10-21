@@ -4,14 +4,16 @@ var HashMap = require("hashmap")
 var tinycolor = require("tinycolor2");
 
 var margin = {
-        top: $("#chart").parent().height() / 7,
+        top: $("#chart").parent().height() / 6.5,
+        //top: 0,
         right: 0,
         bottom: 0,
-        left: $("#chart").parent().width() / 6.5
+        left: $("#chart").parent().width() / 6
+            //left: 0
     },
     width = $("#chart").parent().width() - margin.left - margin.right,
     height = $("#chart").parent().height() - margin.top - margin.bottom,
-    gridSize = Math.floor(width / 12),
+    gridSize = 0,
     total_legendWidth = 0,
     h_labels = [],
     v_labels = [],
@@ -31,6 +33,14 @@ var margin = {
 $.getJSON("data.json", function(data) {
     h_labels = data.h_labels;
     v_labels = data.v_labels;
+    console.log(height);
+    console.log(width);
+    if (h_labels.length > v_labels.length) {
+        gridSize = Math.floor((width - margin.left) / h_labels.length);
+    } else {
+        gridSize = Math.floor((height - margin.top) / v_labels.length);
+    }
+    showTextInsideBoxes = data.showTextInsideBoxes;
     total_legendWidth = gridSize * h_labels.length * 0.8;
     color_ranges = data.color_scheme.ranges;
     uniqueValues = get_range_values(data.color_scheme.ranges);
@@ -92,7 +102,7 @@ function get_range_values(ranges) {
 }
 
 function loadChart(data) {
-    var svg = d3.select("#chart").append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svg = d3.select("#chart").append("svg").attr("width", width + margin.left).attr("height", height + margin.top).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // Define the div for the tooltip
     var div = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
@@ -163,19 +173,23 @@ function loadChart(data) {
 
         cards.exit().remove();
 
-        cards.enter().append("text").attr("x", function(d) {
-                return ((d.x) * gridSize);
-            })
-            .attr("y", function(d) {
-                return (d.y) * gridSize;
-            })
-            .attr("dx", gridSize * 0.1)
-            .attr("dy", gridSize / 2)
-            .text(function(d) {
-                return d.text;
-            });
+        if (showTextInsideBoxes) {
+            cards.enter().append("text").attr("x", function(d) {
+                    return ((d.x) * gridSize);
+                })
+                .attr("y", function(d) {
+                    return (d.y) * gridSize;
+                })
+                .attr("dx", gridSize * 0.3)
+                .attr("dy", gridSize / 2)
+                .attr("class", "mono")
+                .text(function(d) {
+                    return d.text;
+                });
+            // });.call(wrap, gridSize * 0.7);
 
-        cards.exit().remove();
+            cards.exit().remove();
+        }
 
         function get_fill_color(value) {
             if (value === default_value) {
@@ -198,6 +212,30 @@ function loadChart(data) {
             }
 
             return range_hashmap[uniqueValues[uniqueValues.length - 1]].color;
+        }
+
+        function wrap(text, width) {
+            text.each(function() {
+                var text = d3.select(this),
+                    words = text.text().split(/\s+/).reverse(),
+                    word,
+                    line = [],
+                    lineNumber = 0,
+                    lineHeight = 1.1, // ems
+                    y = text.attr("y"),
+                    dy = parseFloat(text.attr("dy")),
+                    tspan = text.text(null).append("tspan").attr("x", text.attr("x")).attr("y", y).attr("dy", dy + "em");
+                while (word = words.pop()) {
+                    line.push(word);
+                    tspan.text(line.join(" "));
+                    if (tspan.node().getComputedTextLength() > width) {
+                        line.pop();
+                        tspan.text(line.join(" "));
+                        line = [word];
+                        tspan = text.append("tspan").attr("x", text.attr("x")).attr("y", text.attr("y")).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                    }
+                }
+            });
         }
 
         function getRangeColor(value) {
@@ -264,7 +302,7 @@ function loadChart(data) {
         function changeTextSize() {
             var cols = document.getElementsByClassName('mono');
             for (i = 0; i < cols.length; i++) {
-                cols[i].style.fontSize = $("#chart").parent().width() / 50 + "px";
+                cols[i].style.fontSize = $("#chart").parent().width() / 40 + "px";
             }
         }
     };

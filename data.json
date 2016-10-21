@@ -32,135 +32,135 @@
     "content": [
         [{
             "value": -0.99,
-            "text": "neatral"
+            "text": "0"
         }, {
             "value": -0.9,
-            "text": "half better"
+            "text": "5"
         }, {
             "value": -0.85,
-            "text": "very good"
+            "text": "10"
         }, {
             "value": -0.8,
-            "text": "very bad"
+            "text": "15"
         }, {
             "value": -0.65,
-            "text": "Khatarnak!"
+            "text": "25"
         }, {
             "value": -0.55,
-            "text": "little more bad"
+            "text": "30"
         }, {
             "value": -0.5,
-            "text": "neutral"
+            "text": "34"
         }],
         [{
             "value": -0.49,
-            "text": "sample text 1"
+            "text": "35"
         }, {
             "value": -0.43,
-            "text": "sample text 2"
+            "text": "37"
         }, {
             "value": -0.35,
-            "text": "sample text 3"
+            "text": "40"
         }, {
             "value": -0.25,
-            "text": "sample text 4"
+            "text": "42"
         }, {
             "value": -0.1,
-            "text": "sample text 4"
+            "text": "45"
         }, {
             "value": -0.05,
-            "text": "sample text 4"
+            "text": "47"
         }, {
             "value": 0,
-            "text": "sample text 4"
+            "text": "50"
         }],
         [{
             "value": 0,
-            "text": "sample text 1"
+            "text": "50"
         }, {
             "value": 0.01,
-            "text": "sample text 2"
+            "text": "52"
         }, {
             "value": 0.02,
-            "text": "sample text 3"
+            "text": "53"
         }, {
             "value": 0.03,
-            "text": "sample text 4"
+            "text": "54"
         }, {
             "value": 0.04,
-            "text": "sample text 4"
+            "text": "55"
         }, {
             "value": 0.07,
-            "text": "sample text 4"
+            "text": "56"
         }, {
             "value": 0.09,
-            "text": "sample text 4"
+            "text": "59"
         }],
         [{
             "value": 0.1,
-            "text": "sample text 1"
+            "text": "60"
         }, {
             "value": 0.2,
-            "text": "sample text 2"
+            "text": "61"
         }, {
             "value": 0.26,
-            "text": "sample text 3"
+            "text": "62.5"
         }, {
             "value": 0.35,
-            "text": "sample text 4"
+            "text": "67"
         }, {
             "value": 0.4,
-            "text": "sample text 4"
+            "text": "70"
         }, {
             "value": 0.45,
-            "text": "sample text 4"
+            "text": "72"
         }, {
             "value": 0.5,
-            "text": "sample text 4"
+            "text": "75"
         }],
         [{
             "value": 0.51,
-            "text": "sample text 1"
+            "text": "76"
         }, {
             "value": 0.6,
-            "text": "sample text 2"
+            "text": "78"
         }, {
             "value": 0.67,
-            "text": "sample text 3"
+            "text": "80"
         }, {
             "value": 0.75,
-            "text": "sample text 4"
+            "text": "82"
         }, {
             "value": 0.85,
-            "text": "sample text 4"
+            "text": "85"
         }, {
             "value": 0.93,
-            "text": "sample text 4"
+            "text": "87"
         }, {
             "value": 0.99,
-            "text": "sample text 4"
+            "text": "94"
         }],
         [{
             "value": -0.53,
-            "text": "sample text 1"
+            "text": "20"
         }, {
             "value": 0.5,
-            "text": "sample text 2"
+            "text": "73"
         }, {
             "value": 1,
-            "text": "sample text 3"
+            "text": "100"
         }, {
             "value": -1,
-            "text": "sample text 4"
+            "text": "0"
         }, {
             "value": -0.25,
-            "text": "sample text 4"
+            "text": "37"
         }, {
             "value": -0.75,
-            "text": "sample text 4"
+            "text": "12"
         }, {
             "value": 0,
-            "text": "sample text 5"
+            "text": "50"
         }]
     ]
 }
