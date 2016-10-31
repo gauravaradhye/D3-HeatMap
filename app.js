@@ -2,6 +2,8 @@ var $ = require("jquery")
 var d3 = require("d3")
 var HashMap = require("hashmap")
 var tinycolor = require("tinycolor2");
+var convert = require('color-convert');
+var kolor = require('kolor')
 
 var margin = {
         top: $("#chart").parent().height() / 6.5,
@@ -26,8 +28,58 @@ var margin = {
     maximum_color = null,
     legendWidthPercentage = 0.8;
 
-function get_color_ranges_from_custom_scheme(color_scheme) {
+function get_custom_colors(color_scheme) {
+    colors = []
+        // diff = (color_scheme.maximum_value - color_scheme.minimum_value) / (color_scheme.total_intervals);
+        // interval = ((color_scheme.maximum_value + (color_scheme.maximum_value - diff)) / 2 - (color_scheme.minimum_value + (color_scheme.minimum_value + diff)) / 2)
+        // console.log()
+        // diff = interval / (color_scheme.total_intervals - 1);
+    for (var i = 1; i < (color_scheme.total_intervals - 1); i++) {
+        //color = "#" + convert.rgb.hex(colourGradientor(diff * i, convert.hex.rgb(color_scheme.minimum_color), convert.hex.rgb(color_scheme.maximum_color)))
+        //color = less.mix(color_scheme.minimum_color, color_scheme.maximum_color, (diff * i) + "%")
+        min_kolor = kolor(color_scheme.minimum_color)
+        max_kolor = kolor(color_scheme.maximum_color)
+        console.log(i / (color_scheme.total_intervals - 1))
+        colors.push(min_kolor.mix(max_kolor, i / (color_scheme.total_intervals - 1)).hex())
+    }
+    colors.reverse();
+    colors.unshift(color_scheme.minimum_color)
+    colors.push(color_scheme.maximum_color)
+    console.log("and the colors are: " + colors)
+    return colors;
+}
 
+function get_color_ranges_from_custom_scheme(color_scheme) {
+    custom_colors = get_custom_colors(color_scheme)
+    ranges = []
+    diff = (color_scheme.maximum_value - color_scheme.minimum_value) / (color_scheme.total_intervals);
+    //diff = diff.toFixed(2);
+    console.log("diff: " + diff)
+
+    for (var i = 2; i < color_scheme.total_intervals; i++) {
+        ranges.push({
+            color: custom_colors[i - 1],
+            minimum: color_scheme.minimum_value + (diff * (i - 1)),
+            maximum: color_scheme.minimum_value + (diff * i)
+        });
+    }
+
+    console.log(color_scheme.minimum_value)
+
+    ranges.unshift({
+        color: custom_colors[0],
+        minimum: color_scheme.minimum_value,
+        maximum: color_scheme.minimum_value + diff
+    })
+
+    ranges.push({
+        color: custom_colors[custom_colors.length - 1],
+        minimum: color_scheme.maximum_value - diff,
+        maximum: color_scheme.maximum_value
+    })
+
+    console.log(ranges)
+    return ranges;
 }
 
 $.getJSON("data.json", function(data) {
@@ -47,7 +99,7 @@ $.getJSON("data.json", function(data) {
     } else {
         color_ranges = get_color_ranges_from_custom_scheme(data.custom_color_scheme);
     }
-    uniqueValues = get_range_values(data.color_scheme.ranges);
+    uniqueValues = get_range_values(color_ranges);
 
     minimum_value = uniqueValues[0]
     minimum_color = getRangeWhereMinimumIs(minimum_value, color_ranges);
@@ -115,18 +167,18 @@ function colourGradientor(p, rgb_beginning, rgb_end) {
     return rgb;
 };
 
-function hexToRgb(hex) {
-    var c;
-    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-        c = hex.substring(1).split('');
-        if (c.length == 3) {
-            c = [c[0], c[0], c[1], c[1], c[2], c[2]];
-        }
-        c = '0x' + c.join('');
-        return [(c >> 16) & 255, (c >> 8) & 255, c & 255];
-    }
-    throw new Error('Bad Hex');
-}
+// function hexToRgb(hex) {
+//     var c;
+//     if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+//         c = hex.substring(1).split('');
+//         if (c.length == 3) {
+//             c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+//         }
+//         c = '0x' + c.join('');
+//         return [(c >> 16) & 255, (c >> 8) & 255, c & 255];
+//     }
+//     throw new Error('Bad Hex');
+// }
 
 function loadChart(data) {
     var svg = d3.select("#chart").append("svg").attr("width", width + margin.left).attr("height", height + margin.top).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -314,7 +366,7 @@ function loadChart(data) {
         });
 
         legend.append("text").attr("class", "mono").text(function(d) {
-            return "≥" + d;
+            return "≥" + d.toFixed(2);
         }).attr("x", function(d, i) {
             return legendElementWidth * i + (1 - legendWidthPercentage) * total_legendWidth / 2;
         }).attr("y", gridSize * (v_labels.length + 1) + gridSize / 2.5);
