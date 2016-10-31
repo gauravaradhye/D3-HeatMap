@@ -1,8 +1,16 @@
 var express = require('express');
-var app   =   express();
-app.use(express.static(__dirname));
-    app.get('/',function(request,response){
-       response.sendFile(__dirname+'/index.html');
-    });
+var bodyParser = require('body-parser');
+var fs = require('fs');
+var app = express();
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
-    app.listen('8000');
+app.use(bodyParser.json())
+app.use(express.static(__dirname));
+app.post('/', function(request, response) {
+    console.log(request.body.json_config)
+    fs.writeFileSync("data.json", request.body.json_config);
+    response.sendFile(__dirname + '/index.html');
+});
+app.listen('8000');
