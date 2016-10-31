@@ -9,7 +9,6 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 app.use(express.static(__dirname));
 app.post('/', function(request, response) {
-    console.log(request.body.json_config)
     fs.writeFileSync("data.json", request.body.json_config);
     response.sendFile(__dirname + '/index.html');
 });

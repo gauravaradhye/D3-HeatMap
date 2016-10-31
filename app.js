@@ -17,18 +17,18 @@ var margin = {
     total_legendWidth = 0,
     h_labels = [],
     v_labels = [],
-    default_value = null,
-    default_color = null,
     color_ranges = [],
     range_hashmap = new HashMap(),
     uniqueValues = [],
-    default_value = null,
-    default_color = null,
     minimum_value = null,
     minimum_color = null,
     maximum_value = null,
     maximum_color = null,
     legendWidthPercentage = 0.8;
+
+function get_color_ranges_from_custom_scheme(color_scheme) {
+
+}
 
 $.getJSON("data.json", function(data) {
     h_labels = data.h_labels;
@@ -42,11 +42,13 @@ $.getJSON("data.json", function(data) {
     }
     showTextInsideBoxes = data.showTextInsideBoxes;
     total_legendWidth = gridSize * h_labels.length * 0.8;
-    color_ranges = data.color_scheme.ranges;
+    if (!data.showCustomColorScheme) {
+        color_ranges = data.color_scheme.ranges;
+    } else {
+        color_ranges = get_color_ranges_from_custom_scheme(data.custom_color_scheme);
+    }
     uniqueValues = get_range_values(data.color_scheme.ranges);
 
-    default_value = data.color_scheme.default_value;
-    default_color = data.color_scheme.default_color;
     minimum_value = uniqueValues[0]
     minimum_color = getRangeWhereMinimumIs(minimum_value, color_ranges);
     maximum_value = uniqueValues[uniqueValues.length - 1];
@@ -99,6 +101,31 @@ function get_range_values(ranges) {
             uniqueValues.push(el);
     });
     return uniqueValues;
+}
+
+function colourGradientor(p, rgb_beginning, rgb_end) {
+    var w = p * 2 - 1;
+    var w1 = (w + 1) / 2.0;
+    var w2 = 1 - w1;
+
+    var rgb = [parseInt(rgb_beginning[0] * w1 + rgb_end[0] * w2),
+        parseInt(rgb_beginning[1] * w1 + rgb_end[1] * w2),
+        parseInt(rgb_beginning[2] * w1 + rgb_end[2] * w2)
+    ];
+    return rgb;
+};
+
+function hexToRgb(hex) {
+    var c;
+    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+        c = hex.substring(1).split('');
+        if (c.length == 3) {
+            c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c = '0x' + c.join('');
+        return [(c >> 16) & 255, (c >> 8) & 255, c & 255];
+    }
+    throw new Error('Bad Hex');
 }
 
 function loadChart(data) {
@@ -192,9 +219,8 @@ function loadChart(data) {
         }
 
         function get_fill_color(value) {
-            if (value === default_value) {
-                return default_color;
-            } else if (value === minimum_value) {
+
+            if (value === minimum_value) {
                 return minimum_color;
             } else if (value === maximum_value) {
                 return maximum_color;
@@ -239,9 +265,7 @@ function loadChart(data) {
         }
 
         function getRangeColor(value) {
-            if (value === default_value) {
-                return default_color;
-            } else if (value === minimum_value) {
+            if (value === minimum_value) {
                 return minimum_color;
             } else if (value === maximum_value) {
                 return maximum_color;
