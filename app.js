@@ -30,16 +30,10 @@ var margin = {
 
 function get_custom_colors(color_scheme) {
     colors = []
-        // diff = (color_scheme.maximum_value - color_scheme.minimum_value) / (color_scheme.total_intervals);
-        // interval = ((color_scheme.maximum_value + (color_scheme.maximum_value - diff)) / 2 - (color_scheme.minimum_value + (color_scheme.minimum_value + diff)) / 2)
-        // console.log()
-        // diff = interval / (color_scheme.total_intervals - 1);
     for (var i = 1; i < (color_scheme.total_intervals - 1); i++) {
-        //color = "#" + convert.rgb.hex(colourGradientor(diff * i, convert.hex.rgb(color_scheme.minimum_color), convert.hex.rgb(color_scheme.maximum_color)))
-        //color = less.mix(color_scheme.minimum_color, color_scheme.maximum_color, (diff * i) + "%")
         min_kolor = kolor(color_scheme.minimum_color)
         max_kolor = kolor(color_scheme.maximum_color)
-        console.log(i / (color_scheme.total_intervals - 1))
+        console.log(1 - (i / (color_scheme.total_intervals - 1)))
         colors.push(min_kolor.mix(max_kolor, i / (color_scheme.total_intervals - 1)).hex())
     }
     colors.reverse();
@@ -53,7 +47,6 @@ function get_color_ranges_from_custom_scheme(color_scheme) {
     custom_colors = get_custom_colors(color_scheme)
     ranges = []
     diff = (color_scheme.maximum_value - color_scheme.minimum_value) / (color_scheme.total_intervals);
-    //diff = diff.toFixed(2);
     console.log("diff: " + diff)
 
     for (var i = 2; i < color_scheme.total_intervals; i++) {
@@ -154,31 +147,6 @@ function get_range_values(ranges) {
     });
     return uniqueValues;
 }
-
-function colourGradientor(p, rgb_beginning, rgb_end) {
-    var w = p * 2 - 1;
-    var w1 = (w + 1) / 2.0;
-    var w2 = 1 - w1;
-
-    var rgb = [parseInt(rgb_beginning[0] * w1 + rgb_end[0] * w2),
-        parseInt(rgb_beginning[1] * w1 + rgb_end[1] * w2),
-        parseInt(rgb_beginning[2] * w1 + rgb_end[2] * w2)
-    ];
-    return rgb;
-};
-
-// function hexToRgb(hex) {
-//     var c;
-//     if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-//         c = hex.substring(1).split('');
-//         if (c.length == 3) {
-//             c = [c[0], c[0], c[1], c[1], c[2], c[2]];
-//         }
-//         c = '0x' + c.join('');
-//         return [(c >> 16) & 255, (c >> 8) & 255, c & 255];
-//     }
-//     throw new Error('Bad Hex');
-// }
 
 function loadChart(data) {
     var svg = d3.select("#chart").append("svg").attr("width", width + margin.left).attr("height", height + margin.top).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -366,7 +334,8 @@ function loadChart(data) {
         });
 
         legend.append("text").attr("class", "mono").text(function(d) {
-            return "≥" + d.toFixed(2);
+            if (d % 1 === 0) return "≥" + d
+            else return "≥" + d.toFixed(2);
         }).attr("x", function(d, i) {
             return legendElementWidth * i + (1 - legendWidthPercentage) * total_legendWidth / 2;
         }).attr("y", gridSize * (v_labels.length + 1) + gridSize / 2.5);
