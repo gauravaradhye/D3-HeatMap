@@ -162,7 +162,7 @@ function loadChart(data) {
     var xAxis = d3.svg.axis(x).tickValues(x_ticks).tickFormat(function (d, i) {
         return h_labels[i];
     });
-    svg.append("g").attr("class", "x axis").call(xAxis).selectAll("text").attr("class", "class_h_labels").style("text-anchor", "start").attr("dx", "2.25em").attr("dy", "0.4em").attr("transform", "rotate(-22.5)");
+    svg.append("g").attr("class", "x axis").call(xAxis).selectAll("text").attr("class", "class_h_labels").style("text-anchor", "start").attr("dx", "2.25em").attr("dy", "-0.4em").attr("transform", "rotate(-22.5)");
     var heatmapChart = function () {
         raw_data = data.content;
         data = [];
@@ -221,8 +221,8 @@ function loadChart(data) {
                     else {
                         minimum = uniqueValues[i - 1];
                     }
-                    //return getColorWithIntensity(range_hashmap[uniqueValues[i]].color, value, minimum, uniqueValues[i]);
-                    return range_hashmap[uniqueValues[i]].color;
+                    return getColorWithIntensity(range_hashmap[uniqueValues[i]].color, value, minimum, uniqueValues[i]);
+                    //return range_hashmap[uniqueValues[i]].color;
                 }
             }
             return range_hashmap[uniqueValues[uniqueValues.length - 1]].color;
@@ -308,7 +308,7 @@ function loadChart(data) {
         function changeTextSize() {
             var cols = document.getElementsByClassName('mono');
             for (i = 0; i < cols.length; i++) {
-                cols[i].style.fontSize = $("#chart").parent().width() / 50 + "px";
+                cols[i].style.fontSize = $("#chart").parent().width() / 60 + "px";
             }
             var h_labels_elements = document.getElementsByClassName('class_h_labels')
             for (i = 0; i < h_labels_elements.length; i++) {
