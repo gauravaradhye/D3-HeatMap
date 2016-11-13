@@ -12,9 +12,9 @@
                 , "custom_color_scheme": {
                     "minimum_value": -1
                     , "maximum_value": 1
-                    , "minimum_color": "#FFFFCC"
-                    , "maximum_color": "#FF00CC"
-                    , "total_intervals": 5
+                    , "minimum_color": "#FF3300"
+                    , "maximum_color": "#035b26"
+                    , "total_intervals": 4
                 }
                 , "color_scheme": {
                     "ranges": [{
@@ -26,17 +26,13 @@
                         , "maximum": 0
                         , "color": "#F1948A"
                     }, {
-                        "minimum": 0.1
+                        "minimum": 0
                         , "maximum": 0.5
                         , "color": "#82E0AA"
                     }, {
                         "minimum": 0.5
                         , "maximum": 1
                         , "color": "#229954"
-                    }, {
-                        "minimum": 0
-                        , "maximum": 0.1
-                        , "color": "#F4D03F"
                     }]
                 }
                 , "content": [

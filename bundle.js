@@ -267,7 +267,11 @@ function loadChart(data) {
 
         function getColorWithIntensity(color, value, minimum_in_range, maximum_in_range) {
             var intensity_percentage = get_brightening_intensity_percentage(value, minimum_in_range, maximum_in_range);
-            var final_color = getAdjustedColor(color, intensity_percentage);
+            intensity_percentage = intensity_percentage / 100;
+            console.log("intensity_percentage", intensity_percentage);
+            //var final_color = getAdjustedColor(color, intensity_percentage);
+            var final_color = kolor(color).lighten(intensity_percentage).hex();
+            console.log(final_color)
             return final_color;
         }
 
