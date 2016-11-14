@@ -147,7 +147,7 @@ function reloadExpandedChart(number) {
     loadChart(jsonData, number)
 }
 
-function loadChart(data, expandedColumn = (h_labels.length + 1)) {
+function loadChart(data, expandedColumn = h_labels.length + 1) {
     expandedColumnWidth = gridWidth * h_labels.length * 0.4;
     contractedColumnWidth = gridWidth * h_labels.length * 0.6 / (h_labels.length - 1);
     d3.select("svg").remove();
@@ -169,11 +169,30 @@ function loadChart(data, expandedColumn = (h_labels.length + 1)) {
     var x_ticks = []
     for (var i = 0; i < h_labels.length; i++) {
         x_ticks.push(gridWidth * i);
+        //        if (currentExpandedColumn == null) {
+        //            console.log("null bhaiyya")
+        //            x_ticks.push(gridWidth * i)
+        //        }
+        //        else x_ticks.push(getBaseColumnWidth(i) * i);
     }
     var xAxis = d3.svg.axis(x).tickValues(x_ticks).tickFormat(function (d, i) {
         return h_labels[i];
     });
     svg.append("g").attr("class", "x axis").call(xAxis).selectAll("text").attr("class", "class_h_labels").style("text-anchor", "start").attr("dx", "2.25em").attr("dy", "-0.4em").attr("transform", "rotate(-22.5)");
+
+    function getBaseColumnWidth(i) {}
+
+    function getBaseXValue(d) {
+        if ((d.x + 1) === currentExpandedColumn) {
+            return d.x * contractedColumnWidth;
+        }
+        else if ((d.x + 1) < currentExpandedColumn) {
+            return d.x * contractedColumnWidth;
+        }
+        else {
+            return ((d.x - 1) * contractedColumnWidth) + expandedColumnWidth;
+        }
+    }
     var heatmapChart = function () {
         raw_data = data.content;
         data = [];
@@ -208,24 +227,23 @@ function loadChart(data, expandedColumn = (h_labels.length + 1)) {
                 return (d.x) * gridWidth;
             }
             else {
-                console.log("dx + 1 ", d.x + 1)
-                console.log("currentExpanded ", currentExpandedColumn)
-                console.log("dx * contracted ", d.x * contractedColumnWidth)
-                if ((d.x + 1) === currentExpandedColumn) {
-                    return d.x * contractedColumnWidth;
-                }
-                else if ((d.x + 1) < currentExpandedColumn) {
-                    return d.x * contractedColumnWidth;
-                }
-                else {
-                    return ((d.x - 1) * contractedColumnWidth) + expandedColumnWidth;
-                }
+                //                console.log("dx + 1 ", d.x + 1)
+                //                console.log("currentExpanded ", currentExpandedColumn)
+                //                console.log("dx * contracted ", d.x * contractedColumnWidth)
+                return getBaseXValue(d);
             }
         }).attr("y", function (d) {
             return (d.y) * gridHeight;
         }).attr("rx", 4).attr("ry", 4).attr("class", "hour bordered").attr("width", function (d, i) {
             if (expandedColumn <= h_labels.length) {
-                return getBaseColumnWidth(i);
+                var columnNumber = ((i + 1) % h_labels.length);
+                if (columnNumber == 0) {
+                    columnNumber = h_labels.length;
+                }
+                if (columnNumber == expandedColumn) {
+                    return expandedColumnWidth;
+                }
+                return contractedColumnWidth;
             }
             return gridWidth;
         }).attr("height", gridHeight);
@@ -236,17 +254,7 @@ function loadChart(data, expandedColumn = (h_labels.length + 1)) {
         //            .on("mouseout", function (d) {
         //            div.transition().duration(500).style("opacity", 0);
         //        });
-        function getBaseColumnWidth(i) {
-            var columnNumber = ((i + 1) % h_labels.length);
-            if (columnNumber == 0) {
-                columnNumber = h_labels.length;
-            }
-            if (columnNumber == expandedColumn) {
-                return expandedColumnWidth;
-            }
-            return contractedColumnWidth;
-        }
-        cards.transition().duration(1000).style("fill", function (d) {
+        cards.transition().duration(1).style("fill", function (d) {
             return get_fill_color(d.value);
         });
         cards.select("title").text(function (d) {
@@ -255,11 +263,30 @@ function loadChart(data, expandedColumn = (h_labels.length + 1)) {
         cards.exit().remove();
         if (showTextInsideBoxes) {
             cards.enter().append("text").attr("x", function (d) {
-                return ((d.x) * gridWidth);
+                if (currentExpandedColumn == null) {
+                    console.log("currentExpanded is null");
+                    return (d.x) * gridWidth;
+                }
+                else {
+                    return getBaseXValue(d);
+                }
             }).attr("y", function (d) {
                 return (d.y) * gridHeight;
             }).attr("dx", gridWidth * 0.3).attr("dy", gridHeight / 2).attr("class", "mono").text(function (d) {
                 return d.text;
+            }).on("click", function (d, i) {
+                var columnNumber = (i + 1) % h_labels.length;
+                if (columnNumber == 0) {
+                    columnNumber = h_labels.length;
+                }
+                if (columnNumber == currentExpandedColumn) {
+                    currentExpandedColumn = null;
+                    reloadExpandedChart(h_labels.length + 1);
+                }
+                else {
+                    currentExpandedColumn = columnNumber;
+                    reloadExpandedChart(columnNumber);
+                }
             });
             cards.exit().remove();
         }
