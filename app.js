@@ -388,7 +388,7 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
             else return "≥" + d.toFixed(2);
         }).attr("x", function (d, i) {
             return legendElementWidth * i + (1 - legendWidthPercentage) * total_legendWidth / 2;
-        }).attr("y", gridHeight * (v_labels.length + 1) + gridHeight / 2.5);
+        }).attr("y", gridHeight * (v_labels.length + 1) + gridHeight / 3.5);
         legend.exit().remove();
         changeTextSize();
 
