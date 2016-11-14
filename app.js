@@ -25,20 +25,24 @@ var margin = {
     , minimum_color = null
     , maximum_value = null
     , maximum_color = null
-    , legendWidthPercentage = 0.8;
+    , legendWidthPercentage = 0.8
+    , jsonData = null
+    , contractedColumnWidth = 0
+    , expandedColumnWidth = 0
+    , currentExpandedColumn = null;
 
 function get_custom_colors(color_scheme) {
     colors = []
     for (var i = 1; i < (color_scheme.total_intervals - 1); i++) {
         min_kolor = kolor(color_scheme.minimum_color)
         max_kolor = kolor(color_scheme.maximum_color)
-        console.log(1 - (i / (color_scheme.total_intervals - 1)))
+            //console.log(1 - (i / (color_scheme.total_intervals - 1)))
         colors.push(min_kolor.mix(max_kolor, i / (color_scheme.total_intervals - 1)).hex())
     }
     colors.reverse();
     colors.unshift(color_scheme.minimum_color)
     colors.push(color_scheme.maximum_color)
-    console.log("and the colors are: " + colors)
+        //console.log("and the colors are: " + colors)
     return colors;
 }
 
@@ -46,17 +50,17 @@ function get_color_ranges_from_custom_scheme(color_scheme) {
     custom_colors = get_custom_colors(color_scheme)
     ranges = []
     diff = (color_scheme.maximum_value - color_scheme.minimum_value) / (color_scheme.total_intervals);
-    console.log("diff: " + diff)
+    //console.log("diff: " + diff)
     for (var i = 2; i < color_scheme.total_intervals; i++) {
-        console.log("min", parseFloat((color_scheme.minimum_value + (diff * (i - 1))).toFixed(2)))
-        console.log("max", parseFloat((color_scheme.minimum_value + (diff * i)).toFixed(2)))
+        //console.log("min", parseFloat((color_scheme.minimum_value + (diff * (i - 1))).toFixed(2)))
+        //console.log("max", parseFloat((color_scheme.minimum_value + (diff * i)).toFixed(2)))
         ranges.push({
             color: custom_colors[i - 1]
             , minimum: parseFloat((color_scheme.minimum_value + (diff * (i - 1))).toFixed(2))
             , maximum: parseFloat((color_scheme.minimum_value + (diff * i)).toFixed(2))
         });
     }
-    console.log(color_scheme.minimum_value)
+    //console.log(color_scheme.minimum_value)
     ranges.unshift({
         color: custom_colors[0]
         , minimum: color_scheme.minimum_value
@@ -71,10 +75,11 @@ function get_color_ranges_from_custom_scheme(color_scheme) {
     return ranges;
 }
 $.getJSON("data.json", function (data) {
+    jsonData = data;
     h_labels = data.h_labels;
     v_labels = data.v_labels;
-    console.log(height);
-    console.log(width);
+    //console.log(height);
+    //console.log(width);
     gridWidth = Math.floor((width - margin.left) / h_labels.length);
     gridHeight = Math.floor((height - margin.top) / v_labels.length);
     showTextInsideBoxes = data.showTextInsideBoxes;
@@ -86,7 +91,7 @@ $.getJSON("data.json", function (data) {
         color_ranges = get_color_ranges_from_custom_scheme(data.custom_color_scheme);
     }
     uniqueValues = get_range_values(color_ranges);
-    console.log("Unique Values: ", uniqueValues)
+    //console.log("Unique Values: ", uniqueValues)
     minimum_value = uniqueValues[0]
     minimum_color = getRangeWhereMinimumIs(minimum_value, color_ranges);
     maximum_value = uniqueValues[uniqueValues.length - 1];
@@ -138,7 +143,14 @@ function get_range_values(ranges) {
     return uniqueValues;
 }
 
-function loadChart(data) {
+function reloadExpandedChart(number) {
+    loadChart(jsonData, number)
+}
+
+function loadChart(data, expandedColumn = (h_labels.length + 1)) {
+    expandedColumnWidth = gridWidth * h_labels.length * 0.4;
+    contractedColumnWidth = gridWidth * h_labels.length * 0.6 / (h_labels.length - 1);
+    d3.select("svg").remove();
     var svg = d3.select("#chart").append("svg").attr("width", width + margin.left).attr("height", height + margin.top).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     // Define the div for the tooltip
     var div = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
@@ -177,16 +189,63 @@ function loadChart(data) {
         }
         var cards = svg.selectAll(".assignment").data(data);
         cards.append("title");
-        cards.enter().append("rect").attr("x", function (d) {
-            return (d.x) * gridWidth;
+        cards.enter().append("rect").on("click", function (d, i) {
+            var columnNumber = (i + 1) % h_labels.length;
+            if (columnNumber == 0) {
+                columnNumber = h_labels.length;
+            }
+            if (columnNumber == currentExpandedColumn) {
+                currentExpandedColumn = null;
+                reloadExpandedChart(h_labels.length + 1);
+            }
+            else {
+                currentExpandedColumn = columnNumber;
+                reloadExpandedChart(columnNumber);
+            }
+        }).attr("x", function (d) {
+            if (currentExpandedColumn == null) {
+                console.log("currentExpanded is null");
+                return (d.x) * gridWidth;
+            }
+            else {
+                console.log("dx + 1 ", d.x + 1)
+                console.log("currentExpanded ", currentExpandedColumn)
+                console.log("dx * contracted ", d.x * contractedColumnWidth)
+                if ((d.x + 1) === currentExpandedColumn) {
+                    return d.x * contractedColumnWidth;
+                }
+                else if ((d.x + 1) < currentExpandedColumn) {
+                    return d.x * contractedColumnWidth;
+                }
+                else {
+                    return ((d.x - 1) * contractedColumnWidth) + expandedColumnWidth;
+                }
+            }
         }).attr("y", function (d) {
             return (d.y) * gridHeight;
-        }).attr("rx", 4).attr("ry", 4).attr("class", "hour bordered").attr("width", gridWidth).attr("height", gridHeight).on("mouseover", function (d) {
-            div.transition().duration(200).style("opacity", .65);
-            div.html(d.text + "<br/>").style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
-        }).on("mouseout", function (d) {
-            div.transition().duration(500).style("opacity", 0);
-        });
+        }).attr("rx", 4).attr("ry", 4).attr("class", "hour bordered").attr("width", function (d, i) {
+            if (expandedColumn <= h_labels.length) {
+                return getBaseColumnWidth(i);
+            }
+            return gridWidth;
+        }).attr("height", gridHeight);
+        //        .on("mouseover", function (d) {
+        //            div.transition().duration(200).style("opacity", .65);
+        //            div.html(d.text + "<br/>").style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
+        //        });
+        //            .on("mouseout", function (d) {
+        //            div.transition().duration(500).style("opacity", 0);
+        //        });
+        function getBaseColumnWidth(i) {
+            var columnNumber = ((i + 1) % h_labels.length);
+            if (columnNumber == 0) {
+                columnNumber = h_labels.length;
+            }
+            if (columnNumber == expandedColumn) {
+                return expandedColumnWidth;
+            }
+            return contractedColumnWidth;
+        }
         cards.transition().duration(1000).style("fill", function (d) {
             return get_fill_color(d.value);
         });
@@ -221,7 +280,6 @@ function loadChart(data) {
                         minimum = uniqueValues[i - 1];
                     }
                     return getColorWithIntensity(range_hashmap[uniqueValues[i]].color, value, minimum, uniqueValues[i]);
-                    //return range_hashmap[uniqueValues[i]].color;
                 }
             }
             return range_hashmap[uniqueValues[uniqueValues.length - 1]].color;
@@ -267,9 +325,9 @@ function loadChart(data) {
         function getColorWithIntensity(color, value, minimum_in_range, maximum_in_range) {
             var intensity_percentage = get_brightening_intensity_percentage(value, minimum_in_range, maximum_in_range);
             intensity_percentage = intensity_percentage / 100;
-            console.log("intensity_percentage", intensity_percentage);
+            //console.log("intensity_percentage", intensity_percentage);
             var final_color = kolor(color).lighten(intensity_percentage).hex();
-            console.log(final_color)
+            //console.log(final_color)
             return final_color;
         }
 
@@ -290,7 +348,7 @@ function loadChart(data) {
         var legendElementWidth = total_legendWidth / legend_values.length;
         legend_values.unshift(minimum_value);
         legend_values.pop();
-        console.log(legend_values);
+        //console.log(legend_values);
         var legend = svg.selectAll(".legend").data(legend_values);
         legend.enter().append("g").attr("class", "legend");
         legend.append("rect").attr("x", function (d, i) {
