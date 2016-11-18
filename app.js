@@ -228,9 +228,6 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                 return (d.x) * gridWidth;
             }
             else {
-                //                console.log("dx + 1 ", d.x + 1)
-                //                console.log("currentExpanded ", currentExpandedColumn)
-                //                console.log("dx * contracted ", d.x * contractedColumnWidth)
                 return getBaseXValue(d);
             }
         }).attr("y", function (d) {
@@ -263,7 +260,7 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
         });
         cards.exit().remove();
         if (showTextInsideBoxes) {
-            cards.enter().append("text").attr("x", function (d) {
+            cards.enter().append("foreignObject").attr("x", function (d) {
                 if (currentExpandedColumn == null) {
                     console.log("currentExpanded is null");
                     return (d.x) * gridWidth;
@@ -273,16 +270,7 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                 }
             }).attr("y", function (d) {
                 return (d.y) * gridHeight;
-            }).attr("dx", gridWidth * 0.3).attr("dy", gridHeight / 2).attr("class", "monoInside").text(function (d, i) {
-                var columnNumber = (i + 1) % h_labels.length;
-                if (columnNumber == 0) {
-                    columnNumber = h_labels.length + 1;
-                }
-                if (columnNumber == currentExpandedColumn) {
-                    return d.text.substring(0, 32);
-                }
-                return d.text.substring(0, 5);
-            }).on("click", function (d, i) {
+            }).attr("dx", gridWidth * 0.3).attr("dy", gridHeight / 2).attr("class", "monoInside").on("click", function (d, i) {
                 var columnNumber = (i + 1) % h_labels.length;
                 if (columnNumber == 0) {
                     columnNumber = h_labels.length;
@@ -295,6 +283,15 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                     currentExpandedColumn = columnNumber;
                     reloadExpandedChart(columnNumber);
                 }
+            }).attr("width", "100").attr("height", "100").append("xhtml:p").text(function (d, i) {
+                var columnNumber = (i + 1) % h_labels.length;
+                if (columnNumber == 0) {
+                    columnNumber = h_labels.length + 1;
+                }
+                if (columnNumber == currentExpandedColumn) {
+                    return d.text.substring(0, 32);
+                }
+                return d.text.substring(0, 5);
             });
             cards.exit().remove();
         }
@@ -323,29 +320,6 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                 }
             }
             return range_hashmap[uniqueValues[uniqueValues.length - 1]].color;
-        }
-
-        function wrap(text, width) {
-            text.each(function () {
-                var text = d3.select(this)
-                    , words = text.text().split(/\s+/).reverse()
-                    , word, line = []
-                    , lineNumber = 0
-                    , lineHeight = 1.1, // ems
-                    y = text.attr("y")
-                    , dy = parseFloat(text.attr("dy"))
-                    , tspan = text.text(null).append("tspan").attr("x", text.attr("x")).attr("y", y).attr("dy", dy + "em");
-                while (word = words.pop()) {
-                    line.push(word);
-                    tspan.text(line.join(" "));
-                    if (tspan.node().getComputedTextLength() > width) {
-                        line.pop();
-                        tspan.text(line.join(" "));
-                        line = [word];
-                        tspan = text.append("tspan").attr("x", text.attr("x")).attr("y", text.attr("y")).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-                    }
-                }
-            });
         }
 
         function getRangeColor(value) {
