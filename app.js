@@ -29,14 +29,14 @@ var margin = {
     , jsonData = null
     , contractedColumnWidth = 0
     , expandedColumnWidth = 0
-    , currentExpandedColumn = null;
+    , currentExpandedColumn = null
+    , customColorSchemeEnabled = null;
 
 function get_custom_colors(color_scheme) {
     colors = []
     for (var i = 1; i < (color_scheme.total_intervals - 1); i++) {
         min_kolor = kolor(color_scheme.minimum_color)
-        max_kolor = kolor(color_scheme.maximum_color)
-            //console.log(1 - (i / (color_scheme.total_intervals - 1)))
+        max_kolor = kolor(color_scheme.maximum_color).lighten(0.1)
         colors.push(min_kolor.mix(max_kolor, i / (color_scheme.total_intervals - 1)).hex())
     }
     colors.reverse();
@@ -78,6 +78,7 @@ $.getJSON("data.json", function (data) {
     jsonData = data;
     h_labels = data.h_labels;
     v_labels = data.v_labels;
+    customColorSchemeEnabled = data.showCustomColorScheme;
     //console.log(height);
     //console.log(width);
     gridWidth = Math.floor((width - margin.left) / h_labels.length);
@@ -272,8 +273,15 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                 }
             }).attr("y", function (d) {
                 return (d.y) * gridHeight;
-            }).attr("dx", gridWidth * 0.3).attr("dy", gridHeight / 2).attr("class", "mono").text(function (d) {
-                return d.text;
+            }).attr("dx", gridWidth * 0.3).attr("dy", gridHeight / 2).attr("class", "monoInside").text(function (d, i) {
+                var columnNumber = (i + 1) % h_labels.length;
+                if (columnNumber == 0) {
+                    columnNumber = h_labels.length + 1;
+                }
+                if (columnNumber == currentExpandedColumn) {
+                    return d.text.substring(0, 32);
+                }
+                return d.text.substring(0, 5);
             }).on("click", function (d, i) {
                 var columnNumber = (i + 1) % h_labels.length;
                 if (columnNumber == 0) {
@@ -306,7 +314,12 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                     else {
                         minimum = uniqueValues[i - 1];
                     }
-                    return getColorWithIntensity(range_hashmap[uniqueValues[i]].color, value, minimum, uniqueValues[i]);
+                    if (!customColorSchemeEnabled) {
+                        return getColorWithIntensity(range_hashmap[uniqueValues[i]].color, value, minimum, uniqueValues[i]);
+                    }
+                    else {
+                        return range_hashmap[uniqueValues[i]].color;
+                    }
                 }
             }
             return range_hashmap[uniqueValues[uniqueValues.length - 1]].color;
@@ -375,7 +388,6 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
         var legendElementWidth = total_legendWidth / legend_values.length;
         legend_values.unshift(minimum_value);
         legend_values.pop();
-        //console.log(legend_values);
         var legend = svg.selectAll(".legend").data(legend_values);
         legend.enter().append("g").attr("class", "legend");
         legend.append("rect").attr("x", function (d, i) {

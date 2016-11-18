@@ -12,9 +12,9 @@
                 , "custom_color_scheme": {
                     "minimum_value": -1
                     , "maximum_value": 1
-                    , "minimum_color": "#FF3300"
-                    , "maximum_color": "#035b26"
-                    , "total_intervals": 4
+                    , "minimum_color": "#FFFF00"
+                    , "maximum_color": "#FF0000"
+                    , "total_intervals": 5
                 }
                 , "color_scheme": {
                     "ranges": [{
@@ -38,10 +38,10 @@
                 , "content": [
                     [{
                         "value": -0.99
-                        , "text": "1"
+                        , "text": "Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, "
                     }, {
                         "value": -0.9
-                        , "text": "5"
+                        , "text": "Test for lengthy text, "
                     }, {
                         "value": -0.85
                         , "text": "10"
@@ -60,7 +60,7 @@
                     }]
                     , [{
                         "value": -0.49
-                        , "text": "35"
+                        , "text": "Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, "
                     }, {
                         "value": -0.43
                         , "text": "37"
@@ -82,7 +82,7 @@
                     }]
                     , [{
                         "value": 0
-                        , "text": "50"
+                        , "text": "Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, "
                     }, {
                         "value": 0.01
                         , "text": "52"
@@ -104,7 +104,7 @@
                     }]
                     , [{
                         "value": 0.1
-                        , "text": "60"
+                        , "text": "Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, "
                     }, {
                         "value": 0.2
                         , "text": "61"
@@ -126,7 +126,7 @@
                     }]
                     , [{
                         "value": 0.51
-                        , "text": "76"
+                        , "text": "Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, "
                     }, {
                         "value": 0.6
                         , "text": "78"
@@ -148,7 +148,7 @@
                     }]
                     , [{
                         "value": -0.53
-                        , "text": "20"
+                        , "text": "Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, "
                     }, {
                         "value": 0.5
                         , "text": "73"
