@@ -26,10 +26,12 @@
     "color-convert": "^1.5.0",
     "d3": "^3.5.17",
     "express": "^4.14.0",
+    "ftellipsis": "^0.2.3",
     "hashmap": "^2.0.6",
     "jquery": "^3.1.1",
     "kolor": "^1.1.8",
     "less": "^2.7.1",
-    "tinycolor2": "^1.4.1"
+    "tinycolor2": "^1.4.1",
+    "tooltip": "^1.6.1"
   }
 }

@@ -4,6 +4,14 @@ var HashMap = require("hashmap")
 var tinycolor = require("tinycolor2");
 var convert = require('color-convert');
 var kolor = require('kolor')
+    //var tooltip = require('tooltip')
+    //var config = {
+    //    showDelay: 100
+    //    , style: {
+    //        padding: 5
+    //    }
+    //}
+    //tooltip(config)
 var margin = {
         top: $("#chart").parent().height() / 6.5, //top: 0,
         right: 0
@@ -169,7 +177,6 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
     ]);
     var x_ticks = []
     for (var i = 0; i < h_labels.length; i++) {
-        //x_ticks.push(gridWidth * i);
         if (currentExpandedColumn == null) {
             console.log("currentExpanded is null");
             x_ticks.push(i * gridWidth);
@@ -314,14 +321,17 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                     return contractedColumnWidth * 0.9 + 'px';
                 }
                 return gridWidth * 0.9 + 'px';
-            }).style("height", gridHeight * 0.9 + 'px').append("xhtml:span").text(function (d, i) {
-                var columnNumber = (i + 1) % h_labels.length;
-                if (columnNumber == 0) {
-                    columnNumber = h_labels.length + 1;
-                }
-                if (columnNumber == currentExpandedColumn) {
-                    return d.text;
-                }
+            }).style("height", gridHeight * 0.75 + 'px').attr('class', 'clipped').style("font-size", function (d, i) {
+                var height = d3.select(this).style('height');
+                height = height.substring(0, height.length - 2);
+                var width = d3.select(this).style('width');
+                width = height.substring(0, width.length - 2);
+                //return (height * width / 500) + 'px';
+                //return '15px';
+                return $("#chart").parent().width() / 60 + "px";
+            }).attr('title', function (d, i) {
+                return d.text
+            }).append("xhtml:span").text(function (d, i) {
                 return d.text;
             });
             cards.exit().remove();

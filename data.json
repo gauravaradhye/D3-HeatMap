@@ -38,7 +38,7 @@
                 , "content": [
                     [{
                         "value": -0.99
-                        , "text": "Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, "
+                        , "text": "1 Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, , Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text 1"
                     }, {
                         "value": -0.9
                         , "text": "Test for lengthy text, "
@@ -60,7 +60,7 @@
                     }]
                     , [{
                         "value": -0.49
-                        , "text": "Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, "
+                        , "text": "2 Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, , Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text 2"
                     }, {
                         "value": -0.43
                         , "text": "37"
@@ -82,7 +82,7 @@
                     }]
                     , [{
                         "value": 0
-                        , "text": "Test for lengthy text, Test for lengthy text, Test for lengthy text, Test for lengthy text, "
+                        , "text": "3 Test for lengthy text, Test for lengthy text 3"
                     }, {
                         "value": 0.01
                         , "text": "52"
