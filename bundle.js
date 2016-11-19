@@ -170,7 +170,14 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
     ]);
     var x_ticks = []
     for (var i = 0; i < h_labels.length; i++) {
-        x_ticks.push(gridWidth * i);
+        //x_ticks.push(gridWidth * i);
+        if (currentExpandedColumn == null) {
+            console.log("currentExpanded is null");
+            x_ticks.push(i * gridWidth);
+        }
+        else {
+            x_ticks.push(getBaseXValue(i));
+        }
         //        if (currentExpandedColumn == null) {
         //            console.log("null bhaiyya")
         //            x_ticks.push(gridWidth * i)
@@ -184,15 +191,15 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
 
     function getBaseColumnWidth(i) {}
 
-    function getBaseXValue(d) {
-        if ((d.x + 1) === currentExpandedColumn) {
-            return d.x * contractedColumnWidth;
+    function getBaseXValue(x) {
+        if ((x + 1) === currentExpandedColumn) {
+            return x * contractedColumnWidth;
         }
-        else if ((d.x + 1) < currentExpandedColumn) {
-            return d.x * contractedColumnWidth;
+        else if ((x + 1) < currentExpandedColumn) {
+            return x * contractedColumnWidth;
         }
         else {
-            return ((d.x - 1) * contractedColumnWidth) + expandedColumnWidth;
+            return ((x - 1) * contractedColumnWidth) + expandedColumnWidth;
         }
     }
     var heatmapChart = function () {
@@ -229,7 +236,7 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                 return (d.x) * gridWidth;
             }
             else {
-                return getBaseXValue(d);
+                return getBaseXValue(d.x);
             }
         }).attr("y", function (d) {
             return (d.y) * gridHeight;
@@ -267,7 +274,7 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                     return ((d.x) * gridWidth) + contractedColumnWidth * 0.1;
                 }
                 else {
-                    return (getBaseXValue(d)) + contractedColumnWidth * 0.1;
+                    return (getBaseXValue(d.x)) + contractedColumnWidth * 0.1;
                 }
             }).attr("y", function (d) {
                 return ((d.y) * gridHeight) + gridHeight * 0.1;
