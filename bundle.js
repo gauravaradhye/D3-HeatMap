@@ -264,14 +264,26 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
             cards.enter().append("foreignObject").attr("x", function (d) {
                 if (currentExpandedColumn == null) {
                     console.log("currentExpanded is null");
-                    return (d.x) * gridWidth;
+                    return ((d.x) * gridWidth) + contractedColumnWidth * 0.1;
                 }
                 else {
-                    return getBaseXValue(d);
+                    return (getBaseXValue(d)) + contractedColumnWidth * 0.1;
                 }
             }).attr("y", function (d) {
-                return (d.y) * gridHeight;
-            }).attr("dx", gridWidth * 0.3).attr("dy", gridHeight / 2).attr("class", "monoInside").on("click", function (d, i) {
+                return ((d.y) * gridHeight) + gridHeight * 0.1;
+            }).attr("dx", gridWidth * 0.3).attr("dy", gridHeight / 2).attr("width", function (d, i) {
+                if (expandedColumn <= h_labels.length) {
+                    var columnNumber = ((i + 1) % h_labels.length);
+                    if (columnNumber == 0) {
+                        columnNumber = h_labels.length;
+                    }
+                    if (columnNumber == expandedColumn) {
+                        return expandedColumnWidth;
+                    }
+                    return contractedColumnWidth;
+                }
+                return gridWidth;
+            }).attr("height", gridHeight * 0.8).attr("class", "monoInside").on("click", function (d, i) {
                 var columnNumber = (i + 1) % h_labels.length;
                 if (columnNumber == 0) {
                     columnNumber = h_labels.length;
@@ -284,15 +296,27 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                     currentExpandedColumn = columnNumber;
                     reloadExpandedChart(columnNumber);
                 }
-            }).attr("width", "100").attr("height", "100").append("xhtml:p").text(function (d, i) {
+            }).append("xhtml:div").style("width", function (d, i) {
+                if (expandedColumn <= h_labels.length) {
+                    var columnNumber = ((i + 1) % h_labels.length);
+                    if (columnNumber == 0) {
+                        columnNumber = h_labels.length;
+                    }
+                    if (columnNumber == expandedColumn) {
+                        return expandedColumnWidth * 0.9 + 'px';
+                    }
+                    return contractedColumnWidth * 0.9 + 'px';
+                }
+                return gridWidth * 0.9 + 'px';
+            }).style("height", gridHeight * 0.9 + 'px').append("xhtml:span").text(function (d, i) {
                 var columnNumber = (i + 1) % h_labels.length;
                 if (columnNumber == 0) {
                     columnNumber = h_labels.length + 1;
                 }
                 if (columnNumber == currentExpandedColumn) {
-                    return d.text.substring(0, 32);
+                    return d.text;
                 }
-                return d.text.substring(0, 5);
+                return d.text;
             });
             cards.exit().remove();
         }
