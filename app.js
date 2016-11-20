@@ -328,7 +328,11 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                 width = height.substring(0, width.length - 2);
                 //return (height * width / 500) + 'px';
                 //return '15px';
-                return $("#chart").parent().width() / 60 + "px";
+                size = $("#chart").parent().width() / 60;
+                if (size < 15) {
+                    size = 15;
+                }
+                return size + 'px';
             }).attr('title', function (d, i) {
                 return d.text
             }).append("xhtml:span").text(function (d, i) {
@@ -421,12 +425,16 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
 
         function changeTextSize() {
             var cols = document.getElementsByClassName('mono');
+            size = $("#chart").parent().width() / 60;
+            if (size < 15) {
+                size = 15;
+            }
             for (i = 0; i < cols.length; i++) {
-                cols[i].style.fontSize = $("#chart").parent().width() / 60 + "px";
+                cols[i].style.fontSize = size + "px";
             }
             var h_labels_elements = document.getElementsByClassName('class_h_labels')
             for (i = 0; i < h_labels_elements.length; i++) {
-                h_labels_elements[i].style.fontSize = $("#chart").parent().width() / 60 + "px";
+                h_labels_elements[i].style.fontSize = size + "px";
             }
         }
     };
