@@ -9,6 +9,7 @@
                 , "font-face": "Arial"
                 , "showTextInsideBoxes": true
                 , "showCustomColorScheme": false
+                , "tooltipColorScheme": "black"
                 , "custom_color_scheme": {
                     "minimum_value": -1
                     , "maximum_value": 1
@@ -47,7 +48,7 @@
                         , "text": "10"
                     }, {
                         "value": -0.8
-                        , "text": "15"
+                        , "text": "15551t"
                     }, {
                         "value": -0.65
                         , "text": "25"

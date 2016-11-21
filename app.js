@@ -4,14 +4,6 @@ var HashMap = require("hashmap")
 var tinycolor = require("tinycolor2");
 var convert = require('color-convert');
 var kolor = require('kolor')
-    //var tooltip = require('tooltip')
-    //var config = {
-    //    showDelay: 100
-    //    , style: {
-    //        padding: 5
-    //    }
-    //}
-    //tooltip(config)
 var margin = {
         top: $("#chart").parent().height() / 6.5, //top: 0,
         right: 0
@@ -38,7 +30,8 @@ var margin = {
     , contractedColumnWidth = 0
     , expandedColumnWidth = 0
     , currentExpandedColumn = null
-    , customColorSchemeEnabled = null;
+    , customColorSchemeEnabled = null
+    , tooltiColorScheme = null;
 
 function get_custom_colors(color_scheme) {
     colors = []
@@ -157,6 +150,7 @@ function reloadExpandedChart(number) {
 }
 
 function loadChart(data, expandedColumn = h_labels.length + 1) {
+    tooltiColorScheme = data.tooltipColorScheme;
     expandedColumnWidth = gridWidth * h_labels.length * 0.4;
     contractedColumnWidth = gridWidth * h_labels.length * 0.6 / (h_labels.length - 1);
     d3.select("svg").remove();
@@ -184,11 +178,6 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
         else {
             x_ticks.push(getBaseXValue(i));
         }
-        //        if (currentExpandedColumn == null) {
-        //            console.log("null bhaiyya")
-        //            x_ticks.push(gridWidth * i)
-        //        }
-        //        else x_ticks.push(getBaseColumnWidth(i) * i);
     }
     var xAxis = d3.svg.axis(x).tickValues(x_ticks).tickFormat(function (d, i) {
         return h_labels[i];
@@ -259,13 +248,6 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
             }
             return gridWidth;
         }).attr("height", gridHeight);
-        //        .on("mouseover", function (d) {
-        //            div.transition().duration(200).style("opacity", .65);
-        //            div.html(d.text + "<br/>").style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
-        //        });
-        //            .on("mouseout", function (d) {
-        //            div.transition().duration(500).style("opacity", 0);
-        //        });
         cards.transition().duration(1).style("fill", function (d) {
             return get_fill_color(d.value);
         });
@@ -321,22 +303,20 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
                     return contractedColumnWidth * 0.9 + 'px';
                 }
                 return gridWidth * 0.9 + 'px';
-            }).style("height", gridHeight * 0.75 + 'px').attr('class', 'clipped').style("font-size", function (d, i) {
+            }).style("height", gridHeight * 0.75 + 'px').attr('class', 'clipped protip').style("font-size", function (d, i) {
                 var height = d3.select(this).style('height');
                 height = height.substring(0, height.length - 2);
                 var width = d3.select(this).style('width');
                 width = height.substring(0, width.length - 2);
-                //return (height * width / 500) + 'px';
-                //return '15px';
                 size = $("#chart").parent().width() / 60;
                 if (size < 15) {
                     size = 15;
                 }
                 return size + 'px';
-            }).attr('title', function (d, i) {
-                return d.text
-            }).append("xhtml:span").text(function (d, i) {
-                return d.text;
+            }).attr('data-pt-title', function (d, i) {
+                return d.text.toString();
+            }).attr('data-pt-scheme', tooltiColorScheme).append("xhtml:span").text(function (d, i) {
+                return d.text.toString();
             });
             cards.exit().remove();
         }
@@ -411,7 +391,14 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
         legend.enter().append("g").attr("class", "legend");
         legend.append("rect").attr("x", function (d, i) {
             return legendElementWidth * i + (1 - legendWidthPercentage) * total_legendWidth / 2;
-        }).attr("y", gridHeight * (v_labels.length + 0.5)).attr("width", legendElementWidth).attr("height", gridHeight / 2).style("fill", function (d, i) {
+        }).attr("y", gridHeight * (v_labels.length + 0.5)).attr("width", legendElementWidth).attr("height", function (d, i) {
+            if ((gridHeight / 2) > 35) {
+                return 35;
+            }
+            else {
+                return gridHeight / 2
+            }
+        }).style("fill", function (d, i) {
             return getRangeColor(d);
         });
         legend.append("text").attr("class", "mono").text(function (d) {
@@ -419,7 +406,7 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
             else return "≥" + d.toFixed(2);
         }).attr("x", function (d, i) {
             return legendElementWidth * i + (1 - legendWidthPercentage) * total_legendWidth / 2;
-        }).attr("y", gridHeight * (v_labels.length + 1) + gridHeight / 3.5);
+        }).attr("y", gridHeight * (v_labels.length + 0.5) + 50);
         legend.exit().remove();
         changeTextSize();
 
