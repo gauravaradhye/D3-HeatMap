@@ -7,7 +7,7 @@
                 ]
                 , "font-size": 12
                 , "font-face": "Arial"
-                , "showTextInsideBoxes": true
+                , "showTextInsideBoxes": false
                 , "showCustomColorScheme": false
                 , "tooltipColorScheme": "black"
                 , "custom_color_scheme": {
