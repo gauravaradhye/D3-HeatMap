@@ -150,6 +150,7 @@ function reloadExpandedChart(number) {
 }
 
 function loadChart(data, expandedColumn = h_labels.length + 1) {
+    $(".protip-container").remove();
     tooltiColorScheme = data.tooltipColorScheme;
     expandedColumnWidth = gridWidth * h_labels.length * 0.4;
     contractedColumnWidth = gridWidth * h_labels.length * 0.6 / (h_labels.length - 1);
