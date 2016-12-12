@@ -5,11 +5,11 @@ var tinycolor = require("tinycolor2");
 var convert = require('color-convert');
 var kolor = require('kolor')
 var margin = {
-        top: $("#chart").parent().height() / 6.5, //top: 0,
-        right: 0
+        //top: $("#chart").parent().height() / 6.5 //,
+        top: 70
+        , right: 0
         , bottom: 0
         , left: $("#chart").parent().width() / 6
-            //left: 0
     }
     , width = $("#chart").parent().width() - margin.left - margin.right
     , height = $("#chart").parent().height() - margin.top - margin.bottom
@@ -31,7 +31,8 @@ var margin = {
     , expandedColumnWidth = 0
     , currentExpandedColumn = null
     , customColorSchemeEnabled = null
-    , tooltiColorScheme = null;
+    , tooltiColorScheme = null
+    , legendVerticalGap = 10;
 
 function get_custom_colors(color_scheme) {
     colors = []
@@ -43,7 +44,6 @@ function get_custom_colors(color_scheme) {
     colors.reverse();
     colors.unshift(color_scheme.minimum_color)
     colors.push(color_scheme.maximum_color)
-        //console.log("and the colors are: " + colors)
     return colors;
 }
 
@@ -51,17 +51,13 @@ function get_color_ranges_from_custom_scheme(color_scheme) {
     custom_colors = get_custom_colors(color_scheme)
     ranges = []
     diff = (color_scheme.maximum_value - color_scheme.minimum_value) / (color_scheme.total_intervals);
-    //console.log("diff: " + diff)
     for (var i = 2; i < color_scheme.total_intervals; i++) {
-        //console.log("min", parseFloat((color_scheme.minimum_value + (diff * (i - 1))).toFixed(2)))
-        //console.log("max", parseFloat((color_scheme.minimum_value + (diff * i)).toFixed(2)))
         ranges.push({
             color: custom_colors[i - 1]
             , minimum: parseFloat((color_scheme.minimum_value + (diff * (i - 1))).toFixed(2))
             , maximum: parseFloat((color_scheme.minimum_value + (diff * i)).toFixed(2))
         });
     }
-    //console.log(color_scheme.minimum_value)
     ranges.unshift({
         color: custom_colors[0]
         , minimum: color_scheme.minimum_value
@@ -80,8 +76,6 @@ $.getJSON("data.json", function (data) {
     h_labels = data.h_labels;
     v_labels = data.v_labels;
     customColorSchemeEnabled = data.showCustomColorScheme;
-    //console.log(height);
-    //console.log(width);
     gridWidth = Math.floor((width - margin.left) / h_labels.length);
     gridHeight = Math.floor((height - margin.top) / v_labels.length);
     showTextInsideBoxes = data.showTextInsideBoxes;
@@ -93,7 +87,6 @@ $.getJSON("data.json", function (data) {
         color_ranges = get_color_ranges_from_custom_scheme(data.custom_color_scheme);
     }
     uniqueValues = get_range_values(color_ranges);
-    //console.log("Unique Values: ", uniqueValues)
     minimum_value = uniqueValues[0]
     minimum_color = getRangeWhereMinimumIs(minimum_value, color_ranges);
     maximum_value = uniqueValues[uniqueValues.length - 1];
@@ -155,7 +148,7 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
     expandedColumnWidth = gridWidth * h_labels.length * 0.4;
     contractedColumnWidth = gridWidth * h_labels.length * 0.6 / (h_labels.length - 1);
     d3.select("svg").remove();
-    var svg = d3.select("#chart").append("svg").attr("width", width + margin.left).attr("height", height + margin.top).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svg = d3.select("#chart").append("svg").attr("width", width + margin.left).attr("height", height + margin.top + 85).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     // Define the div for the tooltip
     var div = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
     var courseLabels = svg.selectAll(".courseLabel").data(v_labels).enter().append("text").text(function (d) {
@@ -365,9 +358,7 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
         function getColorWithIntensity(color, value, minimum_in_range, maximum_in_range) {
             var intensity_percentage = get_brightening_intensity_percentage(value, minimum_in_range, maximum_in_range);
             intensity_percentage = intensity_percentage / 100;
-            //console.log("intensity_percentage", intensity_percentage);
             var final_color = kolor(color).lighten(intensity_percentage).hex();
-            //console.log(final_color)
             return final_color;
         }
 
@@ -386,17 +377,20 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
         }
         var legend_values = uniqueValues.slice();
         var legendElementWidth = total_legendWidth / legend_values.length;
+        var legendHeight;
         legend_values.unshift(minimum_value);
         legend_values.pop();
         var legend = svg.selectAll(".legend").data(legend_values);
         legend.enter().append("g").attr("class", "legend");
         legend.append("rect").attr("x", function (d, i) {
             return legendElementWidth * i + (1 - legendWidthPercentage) * total_legendWidth / 2;
-        }).attr("y", gridHeight * (v_labels.length + 0.5)).attr("width", legendElementWidth).attr("height", function (d, i) {
+        }).attr("y", gridHeight * (v_labels.length) + margin.top + legendVerticalGap).attr("width", legendElementWidth).attr("height", function (d, i) {
             if ((gridHeight / 2) > 35) {
+                legendHeight = 35;
                 return 35;
             }
             else {
+                legendHeight = gridHeight / 2;
                 return gridHeight / 2
             }
         }).style("fill", function (d, i) {
@@ -407,7 +401,7 @@ function loadChart(data, expandedColumn = h_labels.length + 1) {
             else return "≥" + d.toFixed(2);
         }).attr("x", function (d, i) {
             return legendElementWidth * i + (1 - legendWidthPercentage) * total_legendWidth / 2;
-        }).attr("y", gridHeight * (v_labels.length + 0.5) + 50);
+        }).attr("y", gridHeight * (v_labels.length) + margin.top + legendVerticalGap + legendHeight + 15);
         legend.exit().remove();
         changeTextSize();
 
